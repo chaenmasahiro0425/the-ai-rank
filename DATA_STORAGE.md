@@ -1,107 +1,83 @@
 # 🗄 登録データの保管先について
 
-## TL;DR（現状）
+## TL;DR
 
-登録フォーム（氏名・メール・会社名）から送信されたデータは、今は以下の2箇所だけに流れます：
+登録フォーム（氏名・メール・会社名・ランク等）から送信されたデータは、以下に保存されます：
 
-1. **ユーザーのブラウザ**（`localStorage`）
-2. **Vercel Serverless Function のログ**（`console.log`）
+1. **Supabase の `signups` テーブル**（永続・メイン保存先）
+2. **Vercel Serverless Function のログ**（`console.log` — 補助・7〜30日で自動削除）
+3. **ユーザーのブラウザ**（`localStorage` — 再訪時のオートフィル用のみ）
 
-**つまり運営側にデータベースはまだありません。** Vercelログは検索はできますが、SQLクエリも不可、期限切れ（7〜30日）で消えます。
-
-本格運用するには、下記の「永続DBに接続する」で `SIGNUP_FORWARD_URL` を設定してください。
+セットアップ手順は [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md)、テーブル定義は [`SUPABASE_SCHEMA.sql`](./SUPABASE_SCHEMA.sql) を参照。
 
 ---
 
-## 📊 データの流れ（今）
+## 📊 データの流れ
 
 ```
  [ User Browser ]
       │
-      ├─ localStorage: 'airank:auth' ─────────────┐
-      │                                            │
-      │  POST /api/signup                          │
-      │                                            │
-      ▼                                            │
-[ Vercel Edge / Function ]                         │
-      │                                            │
-      ├─ Origin / Referer / Rate limit / Honeypot │
-      │                                            │
-      ├─ console.log('[AIRANK:signup]', record) ──┐
-      │                                            │
-      └─ (optional) fetch(SIGNUP_FORWARD_URL) ────┘
-                                                   │
-                                                   ▼
-                                     [ Vercel Logs (7-30d) ]
+      ├─ localStorage: 'airank:auth' (再訪時の autofill)
+      │
+      │  POST /api/signup
+      ▼
+[ Vercel Serverless Function ]
+      │
+      ├─ Origin / Referer / Rate limit / Honeypot
+      │
+      ├─ console.log('[AIRANK:signup]', record) ─────> [ Vercel Logs (7-30d) ]
+      │
+      ├─ supabase.from('signups').insert(record) ────> [ Supabase Postgres ✅ ]
+      │
+      └─ (optional) fetch(SIGNUP_FORWARD_URL) ───────> [ Slack/Sheets/etc ]
 ```
 
-ユーザーの `hp`（ハニーポット）や異常値は自動で弾かれます。
+- `SUPABASE_URL` と `SUPABASE_SERVICE_ROLE_KEY` が未設定の場合、Supabase 書き込みはスキップされ警告ログのみ出る（フォーム自体は成功応答を返す）
+- `hp`（ハニーポット）や異常値は自動で弾かれます
 
 ---
 
-## 🔧 永続DBに接続する選択肢
+## 🔍 データの閲覧
 
-`SIGNUP_FORWARD_URL` 環境変数に以下のいずれかのURLを入れるだけ：
+### 一覧・検索・CSV出力
+Supabase Dashboard → **Table Editor** → `signups`
 
-### 推奨 ① **Google Sheets + Apps Script**（5分・無料）
+### SQL集計
+Supabase Dashboard → **SQL Editor**
 
-1. Google Sheets で空のスプレッドシート作成
-2. 「拡張機能」→「Apps Script」
-3. 以下を貼って保存：
+```sql
+-- 最新10件
+select created_at, name, email, company, rank 
+from signups order by created_at desc limit 10;
 
-```javascript
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const data = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    new Date(data.at || Date.now()),
-    data.name || "",
-    data.email || "",
-    data.company || "",
-    data.rank || "",
-    data.referrer || "",
-    data.url || "",
-    data.ip || "",
-    data.ua || "",
-  ]);
-  return ContentService.createTextOutput(JSON.stringify({ ok: true }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+-- 日別登録数
+select date_trunc('day', created_at) as day, count(*) 
+from signups group by day order by day desc;
+
+-- ランク分布
+select rank, count(*) from signups group by rank order by rank;
 ```
 
-4. 「デプロイ」→「ウェブアプリとしてデプロイ」
-5. アクセス権: 「全員」
-6. デプロイ後のURL（`.../exec`）をコピー
-7. Vercel Dashboard → Settings → Environment Variables に `SIGNUP_FORWARD_URL` を追加
-8. 再デプロイ
+### API 経由
+`@supabase/supabase-js` で別アプリから読み取り可能（anon key + RLSポリシー設定要）
 
-これで登録のたびにスプレッドシートに1行ずつ追加されます。
+---
 
-### 推奨 ② **Slack Webhook**（30秒・無料）
+## 📋 保存カラム
 
-リアルタイム通知が欲しい場合：
-
-1. Slack で Incoming Webhook を作成
-2. URL を `SIGNUP_FORWARD_URL` に設定
-3. ただし Slack の JSON 形式に合わせて api/signup.js 側を調整する必要あり
-
-### 推奨 ③ **Vercel Postgres / KV**（本格的）
-
-- `vercel storage create` で Postgres / KV DB を作成
-- `api/signup.js` を書き換えて `@vercel/postgres` or `@vercel/kv` から書き込み
-- 本格運用・分析するならこれ
-
-### 推奨 ④ **Notion API**
-
-1. Notion DB 作成（name, email, company, rank 列）
-2. Notion インテグレーション作成、API key取得
-3. 中間 Apps Script or Vercel function で Notion API を叩く
-4. そのURLを `SIGNUP_FORWARD_URL` に
-
-### 推奨 ⑤ **Airtable / Formspree**
-
-- **Formspree**: 最速。無料プランで月50件。直接 URL 設定すれば OK
-- **Airtable**: Webhook は別途 Zapier / Make 経由が必要
+| カラム | 型 | 内容 |
+|---|---|---|
+| `id` | uuid | 自動採番 |
+| `created_at` | timestamptz | サーバー受信時刻 |
+| `name` | text | 氏名（100文字以内） |
+| `email` | text | メール（200文字以内、RFC+使い捨てドメインブロック） |
+| `company` | text \| null | 会社名（200文字以内） |
+| `rank` | smallint \| null | 診断結果のランク（0〜8） |
+| `client_at` | timestamptz \| null | クライアント時刻（参考値） |
+| `url` | text | 登録時のページURL |
+| `referrer` | text | 参照元URL |
+| `user_agent` | text | User Agent（500文字以内） |
+| `ip` | text | 送信元IP（X-Forwarded-For） |
 
 ---
 
@@ -112,9 +88,11 @@ function doPost(e) {
 - ✅ **Origin チェック** — `ai-rank.org` / `the-ai-rank.vercel.app` / localhost からのみ受付
 - ✅ **Referer チェック** — 別サイトからの POST をブロック
 - ✅ **ハニーポット** — 隠しフィールド `hp` にボットが入力すると無言でスルー
-- ✅ **IPレートリミット** — 同一IPから1分間に5回超えでブロック（in-memory、serverless instance 単位）
-- ✅ **メール厳密検証** — RFC ライクな正規表現 + 使い捨てメールドメインをブロック
+- ✅ **IPレートリミット** — 同一IPから1分間に5回超えでブロック
+- ✅ **メール厳密検証** — 正規表現 + 使い捨てメールドメインをブロック
 - ✅ **最大文字数制限** — name 100 / email 200 / company 200
+- ✅ **Row Level Security** — Supabase テーブルはRLS有効、クライアント直読み不可
+- ✅ **service_role キー** — Vercel 環境変数のみに格納、フロント非公開
 - ✅ **Cache-Control: no-store** — キャッシュ汚染防止
 - ✅ **X-Robots-Tag: noindex** — 検索エンジンにクロールされない
 
@@ -124,13 +102,13 @@ function doPost(e) {
 
 1. 診断完了 → 「SHARE TO X」クリック
 2. 未登録なら → **登録モーダルが開く**
-3. 氏名・メール・会社名を入力（hp は空のまま）
-4. 「登録して続ける」押下 → `completeAuth()` 実行
-   - 1. localStorage に保存（再訪時の autofill 用）
-   - 2. `POST /api/signup` — サーバーへ（失敗しても無言）
+3. 氏名・メール・会社名を入力
+4. 「登録して続ける」押下 → `completeAuth()`
+   - 1. localStorage に保存（再訪 autofill 用）
+   - 2. `POST /api/signup` → **Supabase に保存**
    - 3. モーダル閉じる
-5. X の投稿画面が開き、**`/c?rank=N&name=X` の URL** が含まれる
-6. X が URL を fetch → **ランク別の認定証 OG 画像** を表示
+5. X の投稿画面に `/c?rank=N&name=X` の URL が含まれる
+6. X が URL を fetch → ランク別の認定証 OG 画像を表示
 
 再訪時は登録済みなので、モーダルなしで直接シェアできます。
 
@@ -138,20 +116,21 @@ function doPost(e) {
 
 ## 🛠 トラブルシュート
 
-### データが来ない / ログに出ない
-
-1. Vercel Dashboard → プロジェクト → Logs で `[AIRANK:signup]` を検索
-2. 出ていればサーバーは受信済み → 外部転送側の問題
-3. 出ていなければフロントのフォーム送信に失敗 → ブラウザの DevTools Network で `/api/signup` を確認
+### データがSupabaseに来ない
+1. Vercel Dashboard → Logs で `[AIRANK:signup]` を検索
+2. `[AIRANK:supabase_not_configured]` が出ている → 環境変数未登録 → [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) step 4
+3. `[AIRANK:supabase_insert_failed]` が出ている → テーブル未作成 or RLS問題 → SQL再実行
+4. 何もログに出ていない → フロント側の問題。DevTools Network で `/api/signup` を確認
 
 ### 「Origin not allowed」 が返る
-
-`ALLOWED_ORIGINS` に本番ドメインを追加してください（`api/signup.js` 内）。
+`api/signup.js` の `ALLOWED_ORIGINS` に本番ドメインを追加
 
 ### 「Too many requests」 が返る
+同一IPから連投。60秒で解除。本番で緩めたい場合は `RATE_LIMIT_MAX` を調整
 
-同一IPから連投した可能性。60秒待てば戻ります（デモ・開発用途）。
-本番で緩めたい場合は `RATE_LIMIT_MAX` を調整してください。
+### Supabase を使わず外部転送のみにしたい
+- `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` を未設定にする
+- `SIGNUP_FORWARD_URL` を設定 → その URL に JSON がPOSTされる（Google Sheets/Slack/Notion等）
 
 ---
 
