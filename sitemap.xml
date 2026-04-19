@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/0.9">
+  <url>
+    <loc>https://ai-rank.org/</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://ai-rank.org/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ai-rank.org/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ai-rank.org/"/>
+    <image:image>
+      <image:loc>https://ai-rank.org/og-image.png</image:loc>
+      <image:title>THE AI RANK — 9段階AIスキル格付けランク by CHAEN</image:title>
+      <image:caption>AI活用スキルを9段階で格付けする公式基準</image:caption>
+    </image:image>
+  </url>
+</urlset>

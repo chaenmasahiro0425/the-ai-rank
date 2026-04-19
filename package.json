@@ -1,0 +1,10 @@
+{
+  "name": "the-ai-rank",
+  "version": "1.0.0",
+  "private": true,
+  "description": "THE AI RANK — 9-level global AI literacy classification",
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  }
+}

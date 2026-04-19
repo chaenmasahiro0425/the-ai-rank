@@ -1,110 +1,145 @@
 # 🗄 登録データの保管先について
 
-## 現状（2026-04-19 時点）
+## TL;DR
 
-登録されたデータ（氏名・メール・会社名）は、**現在はユーザーのブラウザの localStorage のみ** に保存されています。
+登録フォーム（氏名・メール・会社名・ランク等）から送信されたデータは、以下に保存されます：
 
-```js
-// script.js 内
-localStorage.setItem("airank:auth", JSON.stringify({
-  name, email, company, at: 1681900000000,
-  rank, referrer, url, ua
-}));
-```
+1. **Supabase の `signups` テーブル**（永続・メイン保存先）
+2. **Vercel Serverless Function のログ**（`console.log` — 補助・7〜30日で自動削除）
+3. **ユーザーのブラウザ**（`localStorage` — 再訪時のオートフィル用のみ）
 
-- **どこにある？** → 各ユーザーのブラウザ内（サーバーには送信されていません）
-- **運営側に届く？** → **現在は届きません**（集めたデータをあなたが見ることは不可）
-- **ブラウザを消したら？** → データは消えます
-- **別のブラウザで診断した時** → 別データとして扱われます
-
-つまり、現状は**運営側にはデータが一切届いていない**状態です。
+セットアップ手順は [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md)、テーブル定義は [`SUPABASE_SCHEMA.sql`](./SUPABASE_SCHEMA.sql) を参照。
 
 ---
 
-## ✅ 本番運用するには（運営側でデータを受け取る）
+## 📊 データの流れ
 
-`script.js` の先頭に、以下の行があります：
-
-```js
-const SIGNUP_WEBHOOK = ""; // ← ここにURLを入れると本番保存が有効になります
+```
+ [ User Browser ]
+      │
+      ├─ localStorage: 'airank:auth' (再訪時の autofill)
+      │
+      │  POST /api/signup
+      ▼
+[ Vercel Serverless Function ]
+      │
+      ├─ Origin / Referer / Rate limit / Honeypot
+      │
+      ├─ console.log('[AIRANK:signup]', record) ─────> [ Vercel Logs (7-30d) ]
+      │
+      ├─ supabase.from('signups').insert(record) ────> [ Supabase Postgres ✅ ]
+      │
+      └─ (optional) fetch(SIGNUP_FORWARD_URL) ───────> [ Slack/Sheets/etc ]
 ```
 
-ここに保存先のWebhook URLを入れると、登録時に自動でそのURLにPOSTされます（localStorageへの保存は継続）。
-
-### 選択肢：どこに溜めるか
-
-| 方法 | 難易度 | コスト | 特徴 |
-|:---|:---:|:---:|:---|
-| **Google Apps Script + スプレッドシート** | ⭐ 簡単 | 無料 | 既存のGoogleアカウントで即時運用可 |
-| **Formspree** | ⭐ 簡単 | 月50件まで無料 / 以降$10〜 | 設定不要、メール通知付き |
-| **Airtable Webhook** | ⭐⭐ 中 | 無料枠あり | データベース的に使える |
-| **Notion API (Proxy経由)** | ⭐⭐ 中 | 無料 | Notionで管理するなら便利 |
-| **Supabase** | ⭐⭐⭐ やや手間 | 無料枠あり | 本格運用向け（認証・DB） |
-| **Vercel Serverless Function + KV** | ⭐⭐⭐ やや手間 | 無料枠あり | 同じVercel内で完結 |
-
-### 推奨：**Google Apps Script（最速 & 無料）**
-
-1. Google Sheets で新規スプレッドシート作成
-2. 拡張機能 → Apps Script
-3. 以下のコードを貼り付け：
-
-```javascript
-function doPost(e) {
-  const sheet = SpreadsheetApp.getActiveSheet();
-  const data = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    new Date(data.at),
-    data.name || "",
-    data.email || "",
-    data.company || "",
-    data.rank || "",
-    data.referrer || "",
-    data.url || "",
-    data.ua || ""
-  ]);
-  return ContentService.createTextOutput(JSON.stringify({ok: true}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-```
-
-4. デプロイ → ウェブアプリとしてデプロイ
-5. 「アクセス」を「全員」に設定
-6. デプロイ後のURLをコピー
-7. `script.js` の `SIGNUP_WEBHOOK` にペースト
-8. Vercel再デプロイ
-
-これで登録の度にスプレッドシートに自動追記されます。
+- `SUPABASE_URL` と `SUPABASE_SERVICE_ROLE_KEY` が未設定の場合、Supabase 書き込みはスキップされ警告ログのみ出る（フォーム自体は成功応答を返す）
+- `hp`（ハニーポット）や異常値は自動で弾かれます
 
 ---
 
-## 🔐 プライバシーとGDPR・個人情報保護法
+## 🔍 データの閲覧
 
-登録された時点で個人情報を取得しているので、**プライバシーポリシーの掲載**を推奨します：
+### 一覧・検索・CSV出力
+Supabase Dashboard → **Table Editor** → `signups`
 
-- 収集目的：証明書発行・シェア機能・法人向け診断の先行案内
-- 保管期間：目的終了後2年（任意）
-- 第三者提供：なし（分析ツールを除く）
-- 削除依頼の受付窓口：メールアドレス
+### SQL集計
+Supabase Dashboard → **SQL Editor**
 
-テンプレが必要であれば生成できます。
+```sql
+-- 最新10件
+select created_at, name, email, company, rank 
+from signups order by created_at desc limit 10;
+
+-- 日別登録数
+select date_trunc('day', created_at) as day, count(*) 
+from signups group by day order by day desc;
+
+-- ランク分布
+select rank, count(*) from signups group by rank order by rank;
+```
+
+### API 経由
+`@supabase/supabase-js` で別アプリから読み取り可能（anon key + RLSポリシー設定要）
 
 ---
 
-## 📤 X（Twitter）シェア時の登録フロー
+## 📋 保存カラム
 
-1. 診断完了 → 証明書画面で「SHARE TO X」を押す
-2. 未登録なら → **登録モーダルが開く**（氏名・メール・会社名）
-3. 「登録して続ける」押下 → `completeAuth()` 実行
-   - localStorage に保存
-   - `SIGNUP_WEBHOOK` が設定されていれば、そこにもPOST
-4. モーダル閉じる → 自動的にX投稿インテントが開く
+| カラム | 型 | 内容 |
+|---|---|---|
+| `id` | uuid | 自動採番 |
+| `created_at` | timestamptz | サーバー受信時刻 |
+| `name` | text | 氏名（100文字以内） |
+| `email` | text | メール（200文字以内、RFC+使い捨てドメインブロック） |
+| `company` | text \| null | 会社名（200文字以内） |
+| `rank` | smallint \| null | 診断結果のランク（0〜8） |
+| `client_at` | timestamptz \| null | クライアント時刻（参考値） |
+| `url` | text | 登録時のページURL |
+| `referrer` | text | 参照元URL |
+| `user_agent` | text | User Agent（500文字以内） |
+| `ip` | text | 送信元IP（X-Forwarded-For） |
+
+---
+
+## 🔐 セキュリティ（自動で有効）
+
+現状の `api/signup.js` は以下をデフォルトで実施：
+
+- ✅ **Origin チェック** — `ai-rank.org` / `the-ai-rank.vercel.app` / localhost からのみ受付
+- ✅ **Referer チェック** — 別サイトからの POST をブロック
+- ✅ **ハニーポット** — 隠しフィールド `hp` にボットが入力すると無言でスルー
+- ✅ **IPレートリミット** — 同一IPから1分間に5回超えでブロック
+- ✅ **メール厳密検証** — 正規表現 + 使い捨てメールドメインをブロック
+- ✅ **最大文字数制限** — name 100 / email 200 / company 200
+- ✅ **Row Level Security** — Supabase テーブルはRLS有効、クライアント直読み不可
+- ✅ **service_role キー** — Vercel 環境変数のみに格納、フロント非公開
+- ✅ **Cache-Control: no-store** — キャッシュ汚染防止
+- ✅ **X-Robots-Tag: noindex** — 検索エンジンにクロールされない
+
+---
+
+## 📤 X（Twitter）シェア時のフロー
+
+1. 診断完了 → 「SHARE TO X」クリック
+2. 未登録なら → **登録モーダルが開く**
+3. 氏名・メール・会社名を入力
+4. 「登録して続ける」押下 → `completeAuth()`
+   - 1. localStorage に保存（再訪 autofill 用）
+   - 2. `POST /api/signup` → **Supabase に保存**
+   - 3. モーダル閉じる
+5. X の投稿画面に `/c?rank=N&name=X` の URL が含まれる
+6. X が URL を fetch → ランク別の認定証 OG 画像を表示
 
 再訪時は登録済みなので、モーダルなしで直接シェアできます。
 
 ---
 
-## ❓ 質問フローの戻るボタン
+## 🛠 トラブルシュート
 
-- 各質問画面の左下に「← 戻る」ボタンがあります（`#prevBtn`）
-- 診断結果画面にも「← 質問に戻る」ボタンを追加しました（`#backToQuizBtn`）
-- 「最初からやり直す」（`#retakeBtn`）で診断リセット
+### データがSupabaseに来ない
+1. Vercel Dashboard → Logs で `[AIRANK:signup]` を検索
+2. `[AIRANK:supabase_not_configured]` が出ている → 環境変数未登録 → [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) step 4
+3. `[AIRANK:supabase_insert_failed]` が出ている → テーブル未作成 or RLS問題 → SQL再実行
+4. 何もログに出ていない → フロント側の問題。DevTools Network で `/api/signup` を確認
+
+### 「Origin not allowed」 が返る
+`api/signup.js` の `ALLOWED_ORIGINS` に本番ドメインを追加
+
+### 「Too many requests」 が返る
+同一IPから連投。60秒で解除。本番で緩めたい場合は `RATE_LIMIT_MAX` を調整
+
+### Supabase を使わず外部転送のみにしたい
+- `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` を未設定にする
+- `SIGNUP_FORWARD_URL` を設定 → その URL に JSON がPOSTされる（Google Sheets/Slack/Notion等）
+
+---
+
+## ❓ 質疑応答の戻るボタン
+
+- ✅ 各質問カードの左上に「← 前の質問」ボタン（Q1は「氏名入力に戻る」）
+- ✅ 結果画面に「質問に戻る」ボタン（最後の質問に戻れる）
+- ✅ 「最初からやり直す」ボタン（診断をリセット）
+
+---
+
+最終更新: 2026-04-19
