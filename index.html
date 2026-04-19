@@ -62,7 +62,7 @@
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300..700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css?v=20260419-9" />
+  <link rel="stylesheet" href="style.css?v=20260419-10" />
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -1365,51 +1365,50 @@
             <input type="text" id="entContactName" required placeholder="例：茶圓 将裕" autocomplete="name" maxlength="60"/>
           </div>
           <div class="auth-field">
-            <label class="mono small dim" for="entEmail">EMAIL · メール <span class="req">*</span></label>
-            <input type="email" id="entEmail" required placeholder="name@example.com" autocomplete="email"/>
+            <label class="mono small dim" for="entJobTitle">ROLE · 役職</label>
+            <input type="text" id="entJobTitle" placeholder="例：取締役 / 経営企画部長 / 情シス" autocomplete="organization-title" maxlength="80"/>
           </div>
-        </div>
-
-        <div class="auth-field">
-          <label class="mono small dim" for="entEmployeeCount">EMPLOYEES · 社員数</label>
-          <select id="entEmployeeCount">
-            <option value="">—— 選択してください ——</option>
-            <option value="under_50">〜50名</option>
-            <option value="50_300">50〜300名</option>
-            <option value="300_1000">300〜1,000名</option>
-            <option value="over_1000">1,000名以上</option>
-            <option value="unspecified">未定 / 非公開</option>
-          </select>
         </div>
 
         <div class="auth-row-2">
           <div class="auth-field">
-            <label class="mono small dim" for="entBudget">BUDGET · 予算感</label>
-            <select id="entBudget">
-              <option value="">—— 選択 ——</option>
-              <option value="under_1m">〜100万円</option>
-              <option value="1_5m">100〜500万円</option>
-              <option value="5_10m">500〜1,000万円</option>
-              <option value="over_10m">1,000万円以上</option>
-              <option value="unspecified">未定</option>
-            </select>
+            <label class="mono small dim" for="entEmail">EMAIL · メール <span class="req">*</span></label>
+            <input type="email" id="entEmail" required placeholder="name@example.com" autocomplete="email"/>
           </div>
           <div class="auth-field">
-            <label class="mono small dim" for="entTimeline">TIMELINE · 導入時期</label>
-            <select id="entTimeline">
+            <label class="mono small dim" for="entEmployeeCount">EMPLOYEES · 社員数</label>
+            <select id="entEmployeeCount">
               <option value="">—— 選択 ——</option>
-              <option value="within_3m">3ヶ月以内</option>
-              <option value="3_6m">3〜6ヶ月以内</option>
-              <option value="6_12m">6ヶ月〜1年以内</option>
-              <option value="over_12m">1年以上先</option>
-              <option value="unspecified">未定</option>
+              <option value="under_50">〜50名</option>
+              <option value="50_300">50〜300名</option>
+              <option value="300_1000">300〜1,000名</option>
+              <option value="over_1000">1,000名以上</option>
+              <option value="unspecified">未定 / 非公開</option>
             </select>
           </div>
         </div>
 
+        <fieldset class="auth-field checkbox-group">
+          <legend class="mono small dim">INTERESTS · ご興味のある領域（複数選択可）</legend>
+          <div class="chk-grid">
+            <label class="chk-item"><input type="checkbox" name="entInterest" value="diagnosis_tool"/><span>法人診断ツール</span></label>
+            <label class="chk-item"><input type="checkbox" name="entInterest" value="training"/><span>AI研修・ワークショップ</span></label>
+            <label class="chk-item"><input type="checkbox" name="entInterest" value="consulting"/><span>AIコンサルティング</span></label>
+            <label class="chk-item"><input type="checkbox" name="entInterest" value="development"/><span>AI開発・実装支援</span></label>
+            <label class="chk-item"><input type="checkbox" name="entInterest" value="other"/><span>その他</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="auth-field radio-group">
+          <legend class="mono small dim">CONSULTATION · ご相談の段階</legend>
+          <label class="rad-item"><input type="radio" name="entConsultPref" value="immediate"/><span>すぐに無料相談したい</span></label>
+          <label class="rad-item"><input type="radio" name="entConsultPref" value="later"/><span>情報がまとまってから連絡してほしい</span></label>
+          <label class="rad-item"><input type="radio" name="entConsultPref" value="info_only"/><span>検討段階・まずは情報のみ</span></label>
+        </fieldset>
+
         <div class="auth-field">
-          <label class="mono small dim" for="entMessage">MESSAGE · 具体的な課題・ご要望（任意）</label>
-          <textarea id="entMessage" rows="3" placeholder="例：営業部門200名のAI活用レベルを可視化したい" maxlength="2000"></textarea>
+          <label class="mono small dim" for="entMessage">MESSAGE · ご質問・ご要望（任意）</label>
+          <textarea id="entMessage" rows="3" placeholder="例：営業部門200名のAI活用レベルを可視化したい／社内研修を設計してほしい 等" maxlength="2000"></textarea>
         </div>
 
         <button class="auth-btn email" type="submit">
@@ -1419,8 +1418,8 @@
       </form>
 
       <p class="modal-legal mono small dim">
-        送信した情報はTHE AI RANK 法人向けの個別案内にのみ使用します。<br/>
-        通常3営業日以内に担当者よりご返信いたします。
+        送信した情報は THE AI RANK 法人向けの個別案内にのみ使用します。<br/>
+        いただいた内容を拝見のうえ、順次ご返信いたします。
       </p>
     </div>
   </div>
@@ -1428,8 +1427,8 @@
   <!-- ─── TOAST ─── -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="i18n.js?v=20260419-9"></script>
-  <script src="script.js?v=20260419-9"></script>
+  <script src="i18n.js?v=20260419-10"></script>
+  <script src="script.js?v=20260419-10"></script>
 
   <!-- Vercel Analytics & Speed Insights (no-op if not enabled in dashboard) -->
   <script defer src="/_vercel/insights/script.js"></script>

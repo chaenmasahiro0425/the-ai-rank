@@ -27,8 +27,11 @@ const MAX_MESSAGE = 2000;
 const MAX_UA = 500;
 
 const EMPLOYEE_COUNTS = new Set(["under_50", "50_300", "300_1000", "over_1000", "unspecified"]);
-const BUDGET_RANGES  = new Set(["under_1m", "1_5m", "5_10m", "over_10m", "unspecified"]);
-const TIMELINES      = new Set(["within_3m", "3_6m", "6_12m", "over_12m", "unspecified"]);
+const BUDGET_RANGES   = new Set(["under_1m", "1_5m", "5_10m", "over_10m", "unspecified"]);
+const TIMELINES       = new Set(["within_3m", "3_6m", "6_12m", "over_12m", "unspecified"]);
+const INTERESTS       = new Set(["diagnosis_tool", "training", "consulting", "development", "other"]);
+const CONSULT_PREFS   = new Set(["immediate", "later", "info_only"]);
+const MAX_JOB_TITLE   = 100;
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX = 3;          // stricter than signup (enterprise inquiries should be rarer)
@@ -111,9 +114,16 @@ export default async function handler(req, res) {
 
     const company = clampStr(body.company, MAX_COMPANY);
     const contact_name = clampStr(body.contact_name, MAX_NAME);
+    const job_title = clampStr(body.job_title, MAX_JOB_TITLE);
     const email = clampStr(body.email, MAX_EMAIL);
     const message = clampStr(body.message, MAX_MESSAGE);
     const ua = clampStr(body.ua, MAX_UA);
+
+    // interests: allow up to 5 enum values, drop anything else
+    const rawInterests = Array.isArray(body.interests) ? body.interests : [];
+    const interests = rawInterests
+      .filter((v) => typeof v === "string" && INTERESTS.has(v))
+      .slice(0, 5);
 
     if (!company) return res.status(400).json({ error: "company is required" });
     if (!contact_name) return res.status(400).json({ error: "contact_name is required" });
@@ -139,10 +149,13 @@ export default async function handler(req, res) {
     const record = {
       company,
       contact_name,
+      job_title: job_title || null,
       email,
       employee_count: pickEnum(body.employee_count, EMPLOYEE_COUNTS),
       budget_range:   pickEnum(body.budget_range, BUDGET_RANGES),
       timeline:       pickEnum(body.timeline, TIMELINES),
+      interests,
+      consultation_pref: pickEnum(body.consultation_pref, CONSULT_PREFS),
       message: message || null,
       client_at: Number.isFinite(body.at) ? new Date(body.at).toISOString() : null,
       url: clampStr(body.url, 500),
@@ -157,8 +170,9 @@ export default async function handler(req, res) {
       at: new Date().toISOString(),
       email_domain: emailDomain,
       employee_count: record.employee_count,
-      budget_range: record.budget_range,
-      timeline: record.timeline,
+      consultation_pref: record.consultation_pref,
+      interests_n: record.interests.length,
+      has_job_title: Boolean(record.job_title),
       has_message: Boolean(record.message),
       ip_present: Boolean(ip && ip !== "unknown"),
     }));

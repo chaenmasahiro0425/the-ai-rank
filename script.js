@@ -866,16 +866,25 @@ function closeModal() {
   const form = document.getElementById("enterpriseForm");
   const $$ = (id) => document.getElementById(id);
 
+  function resetSubmitBtn(btn) {
+    if (!btn) return;
+    btn.disabled = false;
+    btn.innerHTML = '<span>送信する</span><span class="mono">→</span>';
+  }
+
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const company = ($$("entCompany")?.value || "").trim();
     const contact_name = ($$("entContactName")?.value || "").trim();
+    const job_title = ($$("entJobTitle")?.value || "").trim();
     const email = ($$("entEmail")?.value || "").trim();
     const employee_count = $$("entEmployeeCount")?.value || "";
-    const budget_range = $$("entBudget")?.value || "";
-    const timeline = $$("entTimeline")?.value || "";
     const message = ($$("entMessage")?.value || "").trim();
     const hp = ($$("entHp")?.value || "").trim();
+    const interests = Array.from(
+      form.querySelectorAll('input[name="entInterest"]:checked')
+    ).map((el) => el.value);
+    const consultation_pref = (form.querySelector('input[name="entConsultPref"]:checked') || {}).value || null;
 
     if (!company) { toast("会社名を入力してください"); $$("entCompany")?.focus(); return; }
     if (!contact_name) { toast("担当者名を入力してください"); $$("entContactName")?.focus(); return; }
@@ -886,9 +895,10 @@ function closeModal() {
 
     const payload = {
       company, contact_name, email,
+      job_title: job_title || null,
       employee_count: employee_count || null,
-      budget_range: budget_range || null,
-      timeline: timeline || null,
+      interests,
+      consultation_pref,
       message: message || null,
       hp,
       at: Date.now(),
@@ -906,15 +916,16 @@ function closeModal() {
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok) {
         toast(data.error === "Too many requests" ? "しばらくお待ちください" : "送信に失敗しました。再度お試しください");
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>送信する</span><span class="mono">→</span>'; }
+        resetSubmitBtn(submitBtn);
         return;
       }
       closeEnt();
-      toast("お問い合わせを受け付けました。3営業日以内にご連絡します。");
+      toast("お問い合わせを受け付けました。内容を拝見のうえ、順次ご返信いたします。");
       form.reset();
+      resetSubmitBtn(submitBtn);
     } catch (err) {
       toast("通信エラーが発生しました");
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>送信する</span><span class="mono">→</span>'; }
+      resetSubmitBtn(submitBtn);
     }
   });
 })();
