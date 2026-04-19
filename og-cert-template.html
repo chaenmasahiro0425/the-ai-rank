@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Shippori+Mincho+B1:wght@400..800&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 1200px; height: 630px;
+      background: linear-gradient(180deg, #FAF5E9, #F2EAD5);
+      font-family: "Bricolage Grotesque", sans-serif;
+      color: #17130F;
+      overflow: hidden;
+      position: relative;
+    }
+    .border {
+      position: absolute; inset: 20px;
+      border: 2px solid #17130F;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 29px, rgba(23,19,15,0.02) 29px, rgba(23,19,15,0.02) 30px);
+    }
+    .corner {
+      position: absolute; width: 28px; height: 28px;
+      border: 1px solid #17130F;
+    }
+    .tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+    .tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+    .bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+    .br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+
+    .inner {
+      position: absolute; inset: 44px;
+      display: flex; flex-direction: column;
+      padding: 36px 64px;
+    }
+    .head {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px; letter-spacing: 0.35em; color: #8B2514;
+      text-align: center; margin-bottom: 4px;
+    }
+    .sub {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px; letter-spacing: 0.4em; color: #5C5247;
+      text-align: center; text-transform: uppercase;
+    }
+    .main {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+      padding: 24px 0;
+    }
+    .verb {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px; letter-spacing: 0.3em; color: #5C5247;
+      text-transform: uppercase;
+    }
+    .numeral {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 170px; font-weight: 800; font-style: italic; color: #8B2514;
+      font-variation-settings: "opsz" 96, "wdth" 75, "wght" 800;
+      letter-spacing: -0.03em; line-height: 0.9;
+    }
+    .title-en {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-size: 46px; font-weight: 700; letter-spacing: 0.04em;
+      font-variation-settings: "opsz" 60, "wdth" 85;
+    }
+    .title-ja {
+      font-family: "Shippori Mincho B1", serif;
+      font-size: 18px; font-weight: 400; letter-spacing: 0.3em;
+      color: #5C5247; margin-top: 4px;
+    }
+    .desc {
+      font-family: "Shippori Mincho B1", serif;
+      font-size: 16px; color: #2A241E; text-align: center;
+      max-width: 780px; margin: 14px auto 0; line-height: 1.6;
+    }
+    .foot {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 24px;
+      padding-top: 18px; border-top: 1px solid rgba(23,19,15,0.3);
+    }
+    .foot-l, .foot-r { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: 0.22em; color: #5C5247; text-transform: uppercase; }
+    .foot-l { text-align: left; }
+    .foot-r { text-align: right; }
+    .foot-l .big, .foot-r .big { font-family: "Bricolage Grotesque", sans-serif; font-size: 16px; font-weight: 700; color: #17130F; letter-spacing: 0.06em; margin-top: 2px; }
+    .seal {
+      width: 76px; height: 76px; border: 1px solid #8B2514; border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #8B2514;
+    }
+    .seal .s1 { font-family: "JetBrains Mono", monospace; font-size: 6px; letter-spacing: 0.15em; }
+    .seal .s2 { font-family: "Bricolage Grotesque", sans-serif; font-size: 22px; font-weight: 800; font-style: italic; font-variation-settings: "opsz" 36, "wdth" 75; }
+    .seal .s3 { font-family: "JetBrains Mono", monospace; font-size: 5px; letter-spacing: 0.15em; }
+
+    /* rank-specific tint */
+    .final .numeral { color: #17130F; }
+    .final .title-en { color: #17130F; font-style: italic; }
+    .gold .numeral { color: #8B2514; }
+    .gold .title-en { color: #8B2514; }
+  </style>
+</head>
+<body>
+  <div class="border"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="inner" id="inner">
+    <p class="head">── CERTIFICATE OF THE AI RANK ──</p>
+    <p class="sub">認 定 証 · OFFICIAL RECORD</p>
+
+    <div class="main">
+      <p class="verb">HAS ATTAINED THE RANK OF</p>
+      <div class="numeral" id="numeral">IX</div>
+      <div class="title-en" id="titleEn">THE SINGULARIAN</div>
+      <div class="title-ja" id="titleJa">シンギュラリアン</div>
+      <p class="desc" id="desc">AIが会社そのものを運営し、収益までもが自動化された状態。</p>
+    </div>
+
+    <div class="foot">
+      <div class="foot-l">
+        <div>ISSUED BY</div>
+        <div class="big">CHAEN</div>
+      </div>
+      <div class="seal">
+        <span class="s1">THE AI RANK</span>
+        <span class="s2">AIR</span>
+        <span class="s3">MMXXVI</span>
+      </div>
+      <div class="foot-r">
+        <div>VERIFY</div>
+        <div class="big">ai-rank.org</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const LEVELS = {
+      0: { en: "THE ASPIRANT",    ja: "前哨",                   def: "まだ旅は始まっていない。しかし、このページに辿り着いた者には、第一歩を踏み出す資格がある。" },
+      1: { en: "THE BEGINNER",    ja: "ビギナー",               def: "汎用AIの無料版を、検索・備忘録の延長として使う段階。" },
+      2: { en: "THE POWER USER",  ja: "パワーユーザー",         def: "汎用AIの有料プランと特化業務型AIを、用途別に使い分ける段階。" },
+      3: { en: "THE BOT BUILDER", ja: "ボットビルダー",         def: "自作AIで自分の業務を再現・自動化・固定化する段階。" },
+      4: { en: "THE ARTIFACTOR",  ja: "アーティファクター",     def: "Artifacts等で自分ベースのツールを作り、社内外で使われる段階。" },
+      5: { en: "THE VIBE CODER",  ja: "バイブコーダー",         def: "自然言語主導で、社内ツール・簡易な社外ツールを作って本番運用する段階。" },
+      6: { en: "THE AUTOMATOR",   ja: "オートメーター",         def: "業務を分解し、24時間自動稼働のワークフローを社内外で回す段階。" },
+      7: { en: "THE AGENT MASTER", ja: "エージェントマスター",   def: "事業単位のタスクをAIエージェント群に丸ごと委譲する段階。" },
+      8: { en: "THE AI ALCHEMIST", ja: "AIアルケミスト",         def: "AIで創った事業／プロダクトが、現実に収益を生み続ける段階。" },
+      9: { en: "THE SINGULARIAN",  ja: "シンギュラリアン",       def: "AIが会社そのものを運営し、収益までもが自動化された状態。" },
+    };
+    const ROMAN = ["0","I","II","III","IV","V","VI","VII","VIII","IX"];
+
+    const params = new URLSearchParams(location.search);
+    const rank = Math.max(0, Math.min(9, parseInt(params.get("rank") || "9")));
+    const lv = LEVELS[rank];
+
+    document.getElementById("numeral").textContent = ROMAN[rank];
+    document.getElementById("titleEn").textContent = lv.en;
+    document.getElementById("titleJa").textContent = lv.ja;
+    document.getElementById("desc").textContent = lv.def;
+
+    const inner = document.getElementById("inner");
+    if (rank === 9) inner.classList.add("final");
+    if (rank === 8) inner.classList.add("gold");
+  </script>
+</body>
+</html>

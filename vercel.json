@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/c", "destination": "/api/cert" },
+    { "source": "/c/:rank", "destination": "/api/cert?rank=:rank" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

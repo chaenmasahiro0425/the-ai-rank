@@ -446,6 +446,10 @@ function el(tag, attrs = {}, ...children) {
     const lvlEn = $("#certTitleEn")?.textContent || "";
     const lvlJa = $("#certTitleJa")?.textContent || "";
     const num = $("#certNumeral")?.textContent || "";
+    const nmRaw = (nameInput?.value || "").trim();
+    // Map numeral → rank integer for URL
+    const ROMAN_TO_N = { "0":0, "I":1, "II":2, "III":3, "IV":4, "V":5, "VI":6, "VII":7, "VIII":8, "IX":9, "—":0 };
+    const rankInt = ROMAN_TO_N[num] ?? 0;
     const text =
 `🎖️ 私のAIランクは Lv.${num}「${lvlJa}」でした。
 
@@ -455,7 +459,10 @@ function el(tag, attrs = {}, ...children) {
 ▶ ${lvlEn}
 
 あなたのランクは？👇`;
-    const url = location.origin; // always uses the current domain (ai-rank.org / vercel.app)
+    // Use per-rank cert page so X shows the rank-specific certificate preview
+    const certParams = new URLSearchParams({ rank: String(rankInt) });
+    if (nmRaw) certParams.set("name", nmRaw);
+    const url = `${location.origin}/c?${certParams.toString()}`;
     const hashtags = "TheAIRank,AI格付けランク";
     const via = "masahirochaen";
     const params = new URLSearchParams({ text, url, hashtags, via });
