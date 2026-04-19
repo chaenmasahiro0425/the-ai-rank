@@ -9,4 +9,3 @@ Disallow: /api/
 # (add more if needed)
 
 Sitemap: https://ai-rank.org/sitemap.xml
-Host: https://ai-rank.org
