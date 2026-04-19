@@ -84,7 +84,7 @@ AI 熟達度は国境を越える普遍的な指標です。
 2. **Pull Request** — コード改善／誤字修正／新機能
 3. **Discussions** — 設計思想／哲学的議論
 
-貢献してくれた方は、[Contributors](https://github.com/masahirochaen/the-ai-rank/graphs/contributors) に掲載されます。
+貢献してくれた方は、[Contributors](https://github.com/chaenmasahiro0425/the-ai-rank/graphs/contributors) に掲載されます。
 
 ---
 
@@ -110,7 +110,7 @@ the-ai-rank/
 ### ローカルで動かす
 
 ```bash
-git clone https://github.com/masahirochaen/the-ai-rank.git
+git clone https://github.com/chaenmasahiro0425/the-ai-rank.git
 cd the-ai-rank
 python3 -m http.server 4173
 # → http://localhost:4173
