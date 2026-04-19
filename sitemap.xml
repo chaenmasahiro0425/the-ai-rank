@@ -16,4 +16,10 @@
       <image:caption>AI活用スキルを9段階で格付けする公式基準</image:caption>
     </image:image>
   </url>
+  <url>
+    <loc>https://ai-rank.org/privacy</loc>
+    <lastmod>2026-04-19</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
