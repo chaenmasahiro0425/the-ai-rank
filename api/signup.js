@@ -145,8 +145,20 @@ export default async function handler(req, res) {
       ip,
     };
 
-    // 1) Vercel Logs — searchable in the dashboard for ~7-30 days depending on plan
-    console.log("[AIRANK:signup]", JSON.stringify(record));
+    // 1) Vercel Logs — minimal, non-PII log line for observability only.
+    //    Never log raw email/name/company/UA. Use hashed/masked fields instead
+    //    so ops can diagnose issues without leaking personal data into log retention.
+    const emailDomain = email.split("@")[1] || "";
+    const emailMasked = email ? `${email[0]}***@${emailDomain}` : "";
+    console.log("[AIRANK:signup]", JSON.stringify({
+      at: new Date().toISOString(),
+      rank: record.rank,
+      email_domain: emailDomain,
+      email_masked: emailMasked,
+      has_company: Boolean(company),
+      url: record.url,
+      ip_present: Boolean(ip && ip !== "unknown"),
+    }));
 
     // 2) Supabase — primary persistent store
     let stored = null;

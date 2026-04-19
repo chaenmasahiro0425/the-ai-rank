@@ -5,7 +5,7 @@
 登録フォーム（氏名・メール・会社名・ランク等）から送信されたデータは、以下に保存されます：
 
 1. **Supabase の `signups` テーブル**（永続・メイン保存先）
-2. **Vercel Serverless Function のログ**（`console.log` — 補助・7〜30日で自動削除）
+2. **Vercel Serverless Function のログ**（`console.log` — **PII をマスクした最小情報のみ**、7〜30日で自動削除）
 3. **ユーザーのブラウザ**（`localStorage` — 再訪時のオートフィル用のみ）
 
 セットアップ手順は [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md)、テーブル定義は [`SUPABASE_SCHEMA.sql`](./SUPABASE_SCHEMA.sql) を参照。
@@ -25,7 +25,7 @@
       │
       ├─ Origin / Referer / Rate limit / Honeypot
       │
-      ├─ console.log('[AIRANK:signup]', record) ─────> [ Vercel Logs (7-30d) ]
+      ├─ console.log('[AIRANK:signup]', {masked}) ──> [ Vercel Logs (7-30d) · PII はマスク済 ]
       │
       ├─ supabase.from('signups').insert(record) ────> [ Supabase Postgres ✅ ]
       │
@@ -95,6 +95,7 @@ select rank, count(*) from signups group by rank order by rank;
 - ✅ **service_role キー** — Vercel 環境変数のみに格納、フロント非公開
 - ✅ **Cache-Control: no-store** — キャッシュ汚染防止
 - ✅ **X-Robots-Tag: noindex** — 検索エンジンにクロールされない
+- ✅ **ログ側の PII マスク** — Vercel Logs には `email_masked` / `email_domain` / `ip_present` 等のみ出力し、氏名・会社名・生のメール・User-Agent はログに残さない
 
 ---
 
