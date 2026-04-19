@@ -847,11 +847,13 @@ strong { font-weight: 600; color: var(--ink); }
   position: relative;
 }
 
-/* Back button inside each question card */
-.step-back-btn {
-  position: absolute;
-  top: 18px;
-  left: 18px;
+/* Top row: back (left) + next (right) above each question */
+.step-top-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  margin-bottom: 18px;
+}
+
+.step-back-btn, .step-next-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -860,31 +862,41 @@ strong { font-weight: 600; color: var(--ink); }
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink-muted);
   background: transparent;
   border: 1px solid var(--line-strong);
   transition: all 0.25s var(--easing);
   cursor: none;
 }
+.step-back-btn { color: var(--ink-muted); }
 .step-back-btn:hover {
   color: var(--accent);
   border-color: var(--accent);
   background: var(--highlight);
 }
 .step-back-btn .mono { font-size: 12px; }
-.step-back-btn .back-label { font-weight: 500; }
+.step-back-btn .back-label, .step-next-btn .next-label { font-weight: 500; }
+
+.step-next-btn { color: var(--ink); border-color: var(--ink); }
+.step-next-btn .mono { font-size: 12px; }
+.step-next-btn:not(:disabled):hover {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.step-next-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 @media (max-width: 900px) {
-  .step-back-btn {
-    position: relative;
-    top: auto; left: auto;
-    display: inline-flex;
+  .step-top-row { margin-bottom: 10px; }
+  .step-back-btn, .step-next-btn {
     cursor: auto;
-    padding: 6px 12px;
+    padding: 6px 10px;
     font-size: 9px;
-    margin-bottom: 14px;
-    align-self: flex-start;
   }
+  .step-back-btn .back-label, .step-next-btn .next-label { letter-spacing: 0.12em; }
   .diag-step .step-inner { display: flex; flex-direction: column; }
 }
 .step-kicker {

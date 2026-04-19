@@ -281,7 +281,9 @@ function el(tag, attrs = {}, ...children) {
 
     const inner = el("div", { class: "step-inner" });
 
-    // Back button (top-left of each question card)
+    // Top row: back button (left) + forward button (right)
+    const qTopRow = el("div", { class: "step-top-row" });
+
     const qBackBtn = el("button", { type: "button", class: "step-back-btn", "aria-label": "前の質問に戻る" },
       el("span", { class: "mono" }, "←"),
       el("span", { class: "back-label" }, idx === 0 ? "氏名入力に戻る" : "前の質問"),
@@ -290,7 +292,29 @@ function el(tag, attrs = {}, ...children) {
       if (idx === 0) setActive(0);
       else setActive(idx); // idx is 0-based; current step number is idx+1, so idx itself is "previous question"
     });
-    inner.appendChild(qBackBtn);
+
+    const isLast = idx === QUESTIONS.length - 1;
+    const qNextBtn = el("button", {
+      type: "button",
+      class: "step-next-btn",
+      disabled: "",
+      "aria-label": isLast ? "結果を見る" : "次の質問へ",
+    },
+      el("span", { class: "next-label" }, isLast ? "結果を見る" : "次の質問"),
+      el("span", { class: "mono" }, "→"),
+    );
+    qNextBtn.addEventListener("click", () => {
+      clearTimeout(autoAdvanceTimer);
+      if (answers[idx] == null) return;
+      if (isLast) setActive("final");
+      else setActive(idx + 2);
+    });
+
+    qTopRow.appendChild(qBackBtn);
+    qTopRow.appendChild(qNextBtn);
+    inner.appendChild(qTopRow);
+    // Expose for enable/disable on answer change
+    step._qNextBtn = qNextBtn;
 
     inner.appendChild(el("p", { class: "step-kicker mono" }, `QUESTION · ${String(idx + 1).padStart(2, "0")} / ${QUESTIONS.length}`));
     inner.appendChild(el("h3", { class: "step-title" }, q.title));
@@ -311,6 +335,7 @@ function el(tag, attrs = {}, ...children) {
         optEl.classList.add("selected");
         answers[idx] = o.score;
         nextBtn.disabled = false;
+        if (step._qNextBtn) step._qNextBtn.disabled = false;
         persist();
         scheduleAutoAdvance(idx);
       });
@@ -328,15 +353,17 @@ function el(tag, attrs = {}, ...children) {
     if (saved.name) nameInput.value = saved.name;
     if (Array.isArray(saved.answers) && saved.answers.length === QUESTIONS.length) {
       answers = saved.answers.slice();
-      // Reapply selected visuals
+      // Reapply selected visuals + enable next button on already-answered cards
       answers.forEach((score, idx) => {
         if (score == null) return;
-        const match = quizEl.querySelector(`.diag-step[data-step="${idx + 1}"] .diag-option[data-score="${score}"]`);
+        const stepEl = quizEl.querySelector(`.diag-step[data-step="${idx + 1}"]`);
+        const match = stepEl?.querySelector(`.diag-option[data-score="${score}"]`);
         if (match) {
           match.classList.add("selected");
           const input = match.querySelector("input");
           if (input) input.checked = true;
         }
+        if (stepEl && stepEl._qNextBtn) stepEl._qNextBtn.disabled = false;
       });
     }
     // Don't auto-resume mid-quiz — always start at step 0 to show name field.
