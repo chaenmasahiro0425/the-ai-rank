@@ -71,7 +71,7 @@ select rank, count(*) from signups group by rank order by rank;
 | `created_at` | timestamptz | サーバー受信時刻 |
 | `name` | text | 氏名（100文字以内） |
 | `email` | text | メール（200文字以内、RFC+使い捨てドメインブロック） |
-| `company` | text \| null | 会社名（200文字以内） |
+| `company` | text | 会社名（200文字以内・API層で必須）※DBスキーマ上は `null` 可だが `/api/signup` では必須バリデーション |
 | `rank` | smallint \| null | 診断結果のランク（0〜8） |
 | `client_at` | timestamptz \| null | クライアント時刻（参考値） |
 | `url` | text | 登録時のページURL |

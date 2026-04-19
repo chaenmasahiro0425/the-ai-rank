@@ -853,7 +853,17 @@ strong { font-weight: 600; color: var(--ink); }
 .step-back-btn .back-label { font-weight: 500; }
 
 @media (max-width: 900px) {
-  .step-back-btn { cursor: auto; top: 12px; left: 12px; padding: 6px 10px; font-size: 9px; }
+  .step-back-btn {
+    position: relative;
+    top: auto; left: auto;
+    display: inline-flex;
+    cursor: auto;
+    padding: 6px 12px;
+    font-size: 9px;
+    margin-bottom: 14px;
+    align-self: flex-start;
+  }
+  .diag-step .step-inner { display: flex; flex-direction: column; }
 }
 .step-kicker {
   font-size: 10px; letter-spacing: 0.3em; color: var(--accent);
