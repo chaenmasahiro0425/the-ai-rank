@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE AI RANK — AI 格付けランク by CHAEN</title>
+  <meta name="description" content="THE AI RANK — 個人のAI活用スキルを9段階で格付け。ビギナーからシンギュラリアンまで。10問で診断＆認定証発行。" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="THE AI RANK — AI 格付けランク by CHAEN" />
+  <meta property="og:description" content="個人のAI活用スキルを9段階で格付け。ビギナーからシンギュラリアンまで。10問の診断で、あなたのランクと認定証を発行。" />
+  <meta property="og:image" content="https://ai-rank.org/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://ai-rank.org" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="THE AI RANK" />
+  <meta property="og:locale" content="ja_JP" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@masahirochaen" />
+  <meta name="twitter:creator" content="@masahirochaen" />
+  <meta name="twitter:title" content="THE AI RANK — AI 格付けランク by CHAEN" />
+  <meta name="twitter:description" content="個人のAI活用スキルを9段階で格付け。ビギナーからシンギュラリアンまで。10問で診断＆認定証発行。" />
+  <meta name="twitter:image" content="https://ai-rank.org/og-image.png" />
+
+  <link rel="canonical" href="https://ai-rank.org" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300..700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css?v=20260419-3" />
+</head>
+<body data-current-level="00">
+
+  <!-- ─── texture ─── -->
+  <div class="grain" aria-hidden="true"></div>
+  <div class="paper-noise" aria-hidden="true"></div>
+
+  <!-- ─── custom cursor ─── -->
+  <div class="cursor-outer" id="cursorOuter" aria-hidden="true"></div>
+  <div class="cursor-inner" id="cursorInner" aria-hidden="true"></div>
+
+  <!-- ─── scroll progress ─── -->
+  <div class="scroll-bar" id="scrollBar" aria-hidden="true"></div>
+
+  <!-- ─── running masthead ─── -->
+  <header class="masthead" role="banner">
+    <div class="masthead-col left">
+      <span class="mono small">AI 格付けランク · by CHAEN</span>
+    </div>
+    <div class="masthead-col center">
+      <span class="mono small">THE · AI · RANK</span>
+      <span class="mono small dim">—</span>
+      <span class="mono small">MMXXVI EDITION</span>
+    </div>
+    <div class="masthead-col right">
+      <span class="mono small dim">CURRENT FOLIO</span>
+      <span class="mono small folio" id="folioDisplay">00 / IX</span>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero" id="hero">
+
+    <div class="hero-crossmark" aria-hidden="true">
+      <svg viewBox="0 0 40 40" width="40" height="40"><line x1="0" y1="20" x2="40" y2="20"/><line x1="20" y1="0" x2="20" y2="40"/></svg>
+    </div>
+
+    <div class="hero-top-meta">
+      <span class="mono">AN OFFICIAL CLASSIFICATION</span>
+      <span class="hairline"></span>
+      <span class="mono">EST. TOKYO / 2026</span>
+    </div>
+
+    <h1 class="masthead-title" aria-label="THE AI RANK">
+      <span class="title-line line-1" data-text="THE"><span class="reveal">THE</span></span>
+      <span class="title-line line-2" data-text="AI"><span class="reveal">AI</span></span>
+      <span class="title-line line-3" data-text="RANK"><span class="reveal">RANK</span></span>
+    </h1>
+
+    <div class="hero-sub">
+      <p class="sub-ja">— <em>AI 格付けランク</em> · by CHAEN —</p>
+      <p class="sub-en mono">THE AI RANK — A 9-LEVEL CLASSIFICATION BY CHAEN</p>
+    </div>
+
+    <div class="hero-stat">
+      <div class="stat-col">
+        <span class="stat-big">IX</span>
+        <span class="stat-label mono">LEVELS</span>
+      </div>
+      <div class="stat-col">
+        <span class="stat-big">I → IX</span>
+        <span class="stat-label mono">BEGINNER → SINGULARIAN</span>
+      </div>
+      <div class="stat-col">
+        <span class="stat-big">01</span>
+        <span class="stat-label mono">VOLUME · EDITION</span>
+      </div>
+    </div>
+
+    <div class="hero-ctas">
+      <a href="#diagnosis" class="hero-cta primary">
+        <span class="mono">▸</span>
+        <span>診 断 を 始 め る</span>
+        <span class="hero-cta-sub mono small">START DIAGNOSIS — FREE</span>
+      </a>
+      <a href="#pyramid" class="hero-cta ghost">
+        <span class="mono">▾</span>
+        <span>全 体 像 を 見 る</span>
+        <span class="hero-cta-sub mono small">SEE THE PYRAMID</span>
+      </a>
+    </div>
+
+    <nav class="hero-scroll">
+      <span class="mono">SCROLL TO ENTER</span>
+      <span class="vertical-line"></span>
+      <span class="mono small dim">09 CHAPTERS · 1 PYRAMID · 10 QUESTIONS</span>
+    </nav>
+  </section>
+
+  <!-- ─── PYRAMID / OVERVIEW ─── -->
+  <section class="pyramid-section" id="pyramid">
+    <div class="chapter-marker">
+      <span class="mono">—— THE PYRAMID ——</span>
+      <span class="mono dim">全 体 像</span>
+    </div>
+
+    <div class="pyramid-head">
+      <h2 class="section-title">NINE LEVELS,<br/><em>ONE ASCENT.</em></h2>
+      <p class="section-sub">
+        AI活用の熟達は <em>階段</em> ではなく <em>ピラミッド</em>。下層が広く、上層に近づくほど狭く、険しい。<br/>
+        各層をクリックすると、その段階の詳細へ移動します。
+      </p>
+    </div>
+
+    <figure class="pyramid">
+      <a class="tier" data-rank="9" href="#level-09">
+        <span class="tier-inner">
+          <span class="tier-num">IX</span>
+          <span class="tier-name">SINGULARIAN</span>
+          <span class="tier-ja">シンギュラリアン</span>
+        </span>
+      </a>
+      <a class="tier gold" data-rank="8" href="#level-08">
+        <span class="tier-inner">
+          <span class="tier-num">VIII</span>
+          <span class="tier-name">AI ALCHEMIST</span>
+          <span class="tier-ja">AIアルケミスト</span>
+        </span>
+      </a>
+      <a class="tier" data-rank="7" href="#level-07">
+        <span class="tier-inner">
+          <span class="tier-num">VII</span>
+          <span class="tier-name">AGENT MASTER</span>
+          <span class="tier-ja">エージェントマスター</span>
+        </span>
+      </a>
+      <a class="tier milestone" data-rank="6" href="#level-06">
+        <span class="tier-inner">
+          <span class="tier-num">VI</span>
+          <span class="tier-name">AUTOMATOR</span>
+          <span class="tier-ja">オートメーター</span>
+        </span>
+      </a>
+      <a class="tier" data-rank="5" href="#level-05">
+        <span class="tier-inner">
+          <span class="tier-num">V</span>
+          <span class="tier-name">VIBE CODER</span>
+          <span class="tier-ja">バイブコーダー</span>
+        </span>
+      </a>
+      <a class="tier milestone" data-rank="4" href="#level-04">
+        <span class="tier-inner">
+          <span class="tier-num">IV</span>
+          <span class="tier-name">ARTIFACTOR</span>
+          <span class="tier-ja">アーティファクター</span>
+        </span>
+      </a>
+      <a class="tier" data-rank="3" href="#level-03">
+        <span class="tier-inner">
+          <span class="tier-num">III</span>
+          <span class="tier-name">BOT BUILDER</span>
+          <span class="tier-ja">ボットビルダー</span>
+        </span>
+      </a>
+      <a class="tier" data-rank="2" href="#level-02">
+        <span class="tier-inner">
+          <span class="tier-num">II</span>
+          <span class="tier-name">POWER USER</span>
+          <span class="tier-ja">パワーユーザー</span>
+        </span>
+      </a>
+      <a class="tier" data-rank="1" href="#level-01">
+        <span class="tier-inner">
+          <span class="tier-num">I</span>
+          <span class="tier-name">BEGINNER</span>
+          <span class="tier-ja">ビギナー</span>
+        </span>
+      </a>
+    </figure>
+
+    <div class="pyramid-legend">
+      <div class="legend-item"><span class="swatch primary"></span><span class="mono small">★ 非エンジニアの到達ライン (IV / VI)</span></div>
+      <div class="legend-item"><span class="swatch gold"></span><span class="mono small">★ 商業的本丸 (VIII)</span></div>
+      <div class="legend-item"><span class="swatch"></span><span class="mono small">通常段階</span></div>
+    </div>
+
+    <div class="pyramid-cta">
+      <a href="#diagnosis" class="pyramid-cta-btn">
+        <span class="mono">▸</span>
+        <span>自分のランクを診断する</span>
+        <span class="mono small dim">— 10問 · 約2分 · 無料 —</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── LEVELS ─── -->
+  <main class="levels" id="levels">
+
+    <!-- Level I ─ Beginner -->
+    <article class="level" data-level="01" data-numeral="I" id="level-01">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">I</span>
+          <span class="level-folio mono">Lv. 01 / IX</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER ONE</p>
+          <h2 class="level-title">
+            <span class="title-en">THE BEGINNER</span>
+            <span class="title-ja">ビ<span class="sep">・</span>ギ<span class="sep">・</span>ナー</span>
+          </h2>
+          <p class="level-tagline">— AIに触れた者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          汎用AIの <em>無料版</em> を、検索・備忘録の延長として使う段階。ChatGPT・Gemini・Copilotに話しかけ、「AIって意外と使えるな」と気づき始めている。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY DO</p>
+            <ul class="tasks">
+              <li>雨の日のデート先をChatGPTに聞く</li>
+              <li>英語メールをGeminiで和訳する</li>
+              <li>Copilotに文章のトーンを調整してもらう</li>
+              <li>会議メモを箇条書きに整えてもらう</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY PRODUCE</p>
+            <ul class="outputs">
+              <li>5〜10行の要約メモ</li>
+              <li>翻訳された文章</li>
+              <li>丁寧な体裁のメール文面</li>
+              <li>買い物リスト・献立案</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>Google検索で15分</p>
+              <p><span class="ba-tag after">AFTER</span>ChatGPTに3回聞いて5分で完了</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> ChatGPT (Free), Gemini (Free), Copilot</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 月額課金へ踏み切る／1日複数回AIを開く習慣</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level II ─ Power User -->
+    <article class="level" data-level="02" data-numeral="II" id="level-02">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">II</span>
+          <span class="level-folio mono">Lv. 02 / IX</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER TWO</p>
+          <h2 class="level-title">
+            <span class="title-en">THE POWER USER</span>
+            <span class="title-ja">パワー<span class="sep">・</span>ユーザー</span>
+          </h2>
+          <p class="level-tagline">— AIを使い分ける者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          汎用AIの<em>有料プラン</em>に加え、<em>特化業務型AI</em>も用途別に使い分ける段階。Deep Research、ファイル解析、画像生成、音声入力まで駆使する。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ GENERALIST AI</p>
+            <ul class="tasks">
+              <li>ChatGPT Deep Researchで競合30pレポート</li>
+              <li>ClaudeでExcel→グラフ付きPPT草案</li>
+              <li>Gemini AdvancedでDrive横断検索</li>
+              <li>Grokで最新X情報を抽出</li>
+              <li>音声モードで移動中にブレスト</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ SPECIALIST AI</p>
+            <ul class="tasks">
+              <li>Notta / tl;dv で商談自動文字起こし</li>
+              <li>Manusで「レポート→スライド→PDF」丸投げ</li>
+              <li>NotebookLMで論文10本→ポッドキャスト</li>
+              <li>Typelessで音声→高精度ドキュメント</li>
+              <li>Gammaでプレゼン自動生成</li>
+              <li>Firecrawl / Fire-PDFで大量Web抽出</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>リサーチ1日、資料化半日、議事録1h</p>
+              <p><span class="ba-tag after">AFTER</span>並行投げで<em>半日</em>で提案書まで完了</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> ChatGPT Plus · Claude Pro · Gemini Advanced · Grok · NotebookLM · Manus · Notta · Typeless · Perplexity · Gamma · Firecrawl</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 「この用途ならこのAI」の判断が秒で出る</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level III ─ Bot Builder -->
+    <article class="level" data-level="03" data-numeral="III" id="level-03">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">III</span>
+          <span class="level-folio mono">Lv. 03 / IX</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER THREE</p>
+          <h2 class="level-title">
+            <span class="title-en">THE BOT BUILDER</span>
+            <span class="title-ja">ボット<span class="sep">・</span>ビルダー</span>
+          </h2>
+          <p class="level-tagline">— 自分の業務を固定化する者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          <em>自作AI</em> で <em>自分の業務を再現・自動化・固定化</em> する段階。<br/>毎回書くプロンプト、何度も答える質問、同じフォーマットの作業を <strong>Bot に閉じ込める</strong>。副産物として他人にも配る。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY DO</p>
+            <ul class="tasks">
+              <li>週報テンプレ内蔵「週報Bot」</li>
+              <li>提案書5パターン内蔵「提案ドラフトBot」</li>
+              <li>自社トークスクリプト「営業支援GPT」</li>
+              <li>議事録100本＋フォーマット学習「議事録Gem」</li>
+              <li>X投稿スタイル学習「自分クローンGPT」</li>
+              <li>返信パターン学習「メール下書きBot」</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY PRODUCE</p>
+            <ul class="outputs">
+              <li>業務SOPを丸ごと内蔵したGPT / Gems / Projects</li>
+              <li>社内配布用Botライブラリ（5〜10本）</li>
+              <li>運用マニュアル</li>
+              <li>月間利用回数レポート</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>同じ質問に何度も答える／属人化</p>
+              <p><span class="ba-tag after">AFTER</span>Botが<em>自分の代わり</em>に同品質で動く</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> GPTs · Gems · Claude Projects · Typeless</p>
+          <p class="foot-item"><span class="mono dim">PRINCIPLE —</span> 「配布する」より<em>「自分の仕事を閉じ込める」</em>が先。配布はその副産物</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 定型業務の80%以上がBot経由で回る</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level IV ─ Artifactor -->
+    <article class="level milestone" data-level="04" data-numeral="IV" id="level-04">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">IV</span>
+          <span class="level-folio mono">Lv. 04 / IX</span>
+          <span class="milestone-badge mono">★ 非エンジニアの第一ゴール</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER FOUR</p>
+          <h2 class="level-title">
+            <span class="title-en">THE ARTIFACTOR</span>
+            <span class="title-ja">アーティ<span class="sep">・</span>ファクター</span>
+          </h2>
+          <p class="level-tagline">— 公開できる成果物を作る者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          Claude <strong>Artifacts</strong>・ChatGPT Canvas・Lovable・v0などで、<em>URL1本で共有できるミニアプリ</em> を作れる段階。<br/>軽量版のVibe Coderとして、まず<em>自分が欲しかったツール</em>を作る。その「<em>自分ベース</em>」のArtifactが、気づけば<strong>社内メンバーに使われ、社外にも届く</strong>——という波及が起きるのがこの段階の醍醐味。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY DO</p>
+            <ul class="tasks">
+              <li>自社サービスの料金シミュレーターを作成</li>
+              <li>業界向けAI診断クイズを作りSNSで配布</li>
+              <li>インタラクティブな決算レポート</li>
+              <li>社内イベント申込LPを30分で公開</li>
+              <li>BtoB商材の比較コンポーネント</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY PRODUCE</p>
+            <ul class="outputs">
+              <li>料金／ROIシミュレーター</li>
+              <li>診断クイズアプリ（SNSシェア機能付き）</li>
+              <li>社内ミニダッシュボード</li>
+              <li>申込LP</li>
+              <li>インタラクティブ提案書</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>PDF／PPTを添付して「イメージです」</p>
+              <p><span class="ba-tag after">AFTER</span>URLで <em>触って体験</em> できる／数字を変えて試せる</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> Claude Artifacts · ChatGPT Canvas · Gemini Canvas · Lovable · v0 · Bolt</p>
+          <p class="foot-item"><span class="mono dim">DIFF (ENG/NON-ENG) —</span> <em>ほぼゼロ。</em>ここが非エンジニアにとっての"作る側"の壁</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 第三者にURLを渡して業務で使われるアプリを1本作る</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level V ─ Vibe Coder -->
+    <article class="level" data-level="05" data-numeral="V" id="level-05">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">V</span>
+          <span class="level-folio mono">Lv. 05 / IX</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER FIVE</p>
+          <h2 class="level-title">
+            <span class="title-en">THE VIBE CODER</span>
+            <span class="title-ja">バイブ<span class="sep">・</span>コーダー</span>
+          </h2>
+          <p class="level-tagline">— 自然言語でアプリを建てる者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          Cursor・Lovable・Bolt・Claude Codeを使い、自然言語主導で<em>社内ツール・簡単な社外向けツール</em>を作って運用する段階。Next.js／Vercel／Supabase／Stripeまで繋いで<em>本番で動かす</em>。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ INTERNAL</p>
+            <ul class="tasks">
+              <li>予実管理ツール（毎日50人が使う）</li>
+              <li>見積生成システム（営業部専用）</li>
+              <li>問い合わせフォーム＋自動回答Bot</li>
+              <li>Excelフロー → Webアプリ化（権限・履歴付き）</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ EXTERNAL (LIGHT)</p>
+            <ul class="tasks">
+              <li>業界特化ニッチSaaSベータ（週末公開）</li>
+              <li>自分の業界課題を解決する簡易ツール</li>
+              <li>クライアント別カスタムダッシュボード</li>
+              <li>Stripe決済で本当にクレカで売上が立つ</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>外注に3ヶ月100万円</p>
+              <p><span class="ba-tag after">AFTER</span>週末に自分で作り、<em>翌週から運用</em></p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> Cursor · Lovable · Bolt · Claude Code · Replit · Vercel · Supabase · Stripe</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 有料ユーザー or 社内本番運用を持つアプリを運用している</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level VI ─ Automator -->
+    <article class="level milestone" data-level="06" data-numeral="VI" id="level-06">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">VI</span>
+          <span class="level-folio mono">Lv. 06 / IX</span>
+          <span class="milestone-badge mono">★ 非エンジニアの到達ライン</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER SIX</p>
+          <h2 class="level-title">
+            <span class="title-en">THE AUTOMATOR</span>
+            <span class="title-ja">オート<span class="sep">・</span>メーター</span>
+          </h2>
+          <p class="level-tagline">— 業務を寝かせる者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          自分の業務を <em>分解</em> し、Dify / Dify Auto / n8n / Make / Zapier / Claude Code / MCP でツール群を繋いで <em>24時間自動稼働</em> させる段階。<br/>ここで作る自動化は、<strong>社内で毎日利用され</strong>、<strong>クライアント業務が実際に回り</strong>——と、<em>現実に効果を発揮している</em>ことが条件。数字で効果が語れる者だけが、この段階を名乗れる。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY DO</p>
+            <ul class="tasks">
+              <li>メール受信 → AI分類 → Slack通知 (n8n)</li>
+              <li>議事録 → 要約 → Salesforce → お礼メール下書き</li>
+              <li>毎朝7時：ニュース・Gmail・カレンダー → Slack ＋ 音声ブリーフィング</li>
+              <li>Dify Autoで自然言語指示だけでワークフロー生成</li>
+              <li>社内FAQ RAG（ドキュメント1000本）</li>
+              <li>請求書PDF → 自動仕訳 → 会計ソフト投入</li>
+              <li>MCPサーバーでNotion / Slack / Gmail を直接操作</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY PRODUCE</p>
+            <ul class="outputs">
+              <li>24時間稼働の n8n / Dify ワークフロー</li>
+              <li>毎朝届くSlackブリーフィング</li>
+              <li>24時間応答RAG Bot</li>
+              <li>自動稼働する営業プロセス</li>
+              <li>月40〜80時間の削減レポート</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>毎朝30分、議事録1h、週の定型数時間</p>
+              <p><span class="ba-tag after">AFTER</span><em>寝ている間に終わっている。</em>自分が休んでも業務が止まらない</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> Dify / Dify Auto · n8n · Make · Zapier · Google AI Studio · Claude Code · MCP</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 自分が寝ている間にも動くワークフローを<em>複数本</em>運用</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level VII ─ Agent Master -->
+    <article class="level" data-level="07" data-numeral="VII" id="level-07">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">VII</span>
+          <span class="level-folio mono">Lv. 07 / IX</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER SEVEN</p>
+          <h2 class="level-title">
+            <span class="title-en">THE AGENT MASTER</span>
+            <span class="title-ja">エージェント<span class="sep">・</span>マスター</span>
+          </h2>
+          <p class="level-tagline">— 事業をAIに任せる者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          Claude Code・Codex・Managed Agents・MCPを駆使し、<em>事業単位のタスク</em> をAIエージェント群に <strong>丸ごと委譲</strong> する段階。
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY DO</p>
+            <ul class="tasks">
+              <li>就寝前に「市場リサーチ→要件→モック→実装→レビュー」一括指示</li>
+              <li>サブエージェントを並列起動（リサーチ・実装・テスト）</li>
+              <li>独自MCPサーバーを開発して公開</li>
+              <li>Skills / Hooksを自作しClaude Code環境をチューニング</li>
+              <li>Managed Agents / A2Aで本番エージェント運用（認証・サンドボックス・権限・ログ）</li>
+              <li>OpenClawでPC操作をAI委譲・24時間右腕化</li>
+              <li>LINE Harness等で顧客向けエージェントを0円運用</li>
+              <li>OSS／書籍／登壇で業界に還元</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY PRODUCE</p>
+            <ul class="outputs">
+              <li>公開中の独自MCPサーバー（★付き）</li>
+              <li>自作Skills・Subagent定義のOSS配布</li>
+              <li>24時間稼働エージェント基盤</li>
+              <li>登壇資料・書籍・技術ブログ</li>
+              <li>1人×Claude Codeで従来比<em>5〜10倍</em>の事業立ち上げ速度</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE</span>事業立ち上げに1年＋数千万円</p>
+              <p><span class="ba-tag after">AFTER</span>週末プロト → 1ヶ月ベータ → 3ヶ月収益化。しかも<em>1人で複数並行</em></p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> Claude Code · Codex · Managed Agents · MCP · Skills · Hooks · OpenClaw · LINE Harness</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 人間1人では物理的に回らない量の業務をAI経由で回している</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level VIII ─ AI Alchemist -->
+    <article class="level milestone gold" data-level="08" data-numeral="VIII" id="level-08">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">VIII</span>
+          <span class="level-folio mono">Lv. 08 / IX</span>
+          <span class="milestone-badge mono gold">★ 商業的本丸 — 収益化</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER EIGHT</p>
+          <h2 class="level-title">
+            <span class="title-en">THE AI ALCHEMIST</span>
+            <span class="title-ja">AI<span class="sep">・</span>アルケミスト</span>
+          </h2>
+          <p class="level-tagline">— AIを現実の価値と収益に錬成する者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          Lv.7までに手に入れた「ツール化・自動化・エージェント運用」の力を束ね、<em>AIを中核にしたプロダクトを市場に出荷し、現実に収益を生み続ける</em> 段階。技術者であると同時に <strong>クリエイター／事業家</strong>。
+        </p>
+
+        <div class="level-grid three-types">
+          <div class="grid-col type-card">
+            <p class="type-num mono">TYPE ONE</p>
+            <h3 class="type-title">社外向けSaaS型</h3>
+            <p class="type-desc">AI-nativeの有料プロダクトを運営。Stripeで決済、有料ユーザー数百〜数千人、月次売上が立つ。</p>
+          </div>
+
+          <div class="grid-col type-card">
+            <p class="type-num mono">TYPE TWO</p>
+            <h3 class="type-title">基幹システム型</h3>
+            <p class="type-desc">自社／顧客企業の<em>基幹業務</em>をAIが担い、毎日数十〜数百人が業務として稼働に依存する。</p>
+          </div>
+
+          <div class="grid-col type-card">
+            <p class="type-num mono">TYPE THREE</p>
+            <h3 class="type-title">プロダクト量産型</h3>
+            <p class="type-desc">複数のAIサービスをポートフォリオ運営。累計売上・広告・ライセンスで積み上げ。</p>
+          </div>
+        </div>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY DO</p>
+            <ul class="tasks">
+              <li>独自AI-native SaaSをローンチ、Stripe決済でユーザー獲得</li>
+              <li>自社基幹業務システムをAI駆動で構築</li>
+              <li>X・YouTube・noteでプロダクトを販売し収益化</li>
+              <li>ブランド・UX・カスタマーサポートまで設計</li>
+              <li>AI Lab（人間＋AIハイブリッド）で複数プロダクト並行ローンチ</li>
+              <li>収益を次のプロダクトへ再投資</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT THEY PRODUCE</p>
+            <ul class="outputs">
+              <li>MRRが立つAI-native SaaS（月商10万〜数千万円）</li>
+              <li>社内基幹として稼働するAIシステム</li>
+              <li>複数プロダクトのポートフォリオ</li>
+              <li><em>「AIだから」ではなく「価値があるから」</em>選ばれる完成度</li>
+              <li>業界での存在感・ブランド</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE (Lv.7)</span>技術は最先端だが、収益化は個人活動レベル</p>
+              <p><span class="ba-tag after">AFTER</span><em>事業として成立するAIプロダクト</em>を持ち、経済圏を作っている</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> Claude Code · 独自LLM API連携 · Stripe · Vercel · Cloudflare · 各社 Fine-tuning · Brand／UX design</p>
+          <p class="foot-item"><span class="mono dim">DIFF (ENG/NON-ENG) —</span> エンジニアは自作実装＋技術で差別化 ／ 非エンジニアは<em>プロダクトビジョン・ドメイン知識・UX</em>で差別化</p>
+          <p class="foot-item"><span class="mono dim">GRADUATION —</span> 自社のAIプロダクトが現実に収益を生み続けている（社外SaaS or 社内基幹）</p>
+        </footer>
+      </div>
+    </article>
+
+    <!-- Level IX ─ Singularian -->
+    <article class="level final" data-level="09" data-numeral="IX" id="level-09">
+      <div class="level-head">
+        <div class="level-numeral-wrap">
+          <span class="level-numeral">IX</span>
+          <span class="level-folio mono">Lv. 09 / IX</span>
+          <span class="milestone-badge mono final-badge">THE FINAL</span>
+        </div>
+        <div class="level-heading">
+          <p class="level-kicker mono">CHAPTER NINE · FINAL</p>
+          <h2 class="level-title">
+            <span class="title-en">THE SINGULARIAN</span>
+            <span class="title-ja">シンギュ<span class="sep">・</span>ラリアン</span>
+          </h2>
+          <p class="level-tagline">— AIに会社そのものを動かさせる者 —</p>
+        </div>
+      </div>
+
+      <div class="level-body">
+        <p class="level-def">
+          AGI級のAI／フルオートエージェント群が <em>会社そのもの</em> を運営し、意思決定・営業・開発・サポート・経理・採用・マーケティングまでを自律実行、<strong>収益までもが自動化</strong>されている状態。<br/><span class="final-note">★ 2026年時点ではまだ誰も到達していない、仮説としての最終地点。</span>
+        </p>
+
+        <div class="level-grid">
+          <div class="grid-col">
+            <p class="col-label mono">◐ WHAT AI RUNS</p>
+            <ul class="tasks">
+              <li><em>経営判断</em>：市場データ・KPIを読んで戦略立案</li>
+              <li><em>営業</em>：リード生成→商談→契約→請求まで無人</li>
+              <li><em>開発</em>：課題発見→要件→実装→改善まで自走</li>
+              <li><em>サポート</em>：24時間多言語対応</li>
+              <li><em>経理・法務</em>：仕訳・請求・契約レビュー・税務</li>
+              <li><em>採用・HR</em>：AIエージェントのプロビジョニング</li>
+              <li><em>マーケ</em>：トレンド検知→配信→CV分析→次施策</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ HUMAN'S ROLE</p>
+            <ul class="outputs">
+              <li>ビジョン設定と<em>価値観の注入</em></li>
+              <li>AIの判断が割れた時の<em>最終意思決定者</em></li>
+              <li>法的・倫理的な<em>最終責任の所在</em></li>
+              <li>社会との接続（メディア・規制・業界）</li>
+            </ul>
+          </div>
+
+          <div class="grid-col">
+            <p class="col-label mono">◐ BEFORE / AFTER</p>
+            <div class="ba">
+              <p><span class="ba-tag">BEFORE (Lv.8)</span>人間＋AIで事業を作る</p>
+              <p><span class="ba-tag after">AFTER</span><em>AIが事業そのものを動かす。</em>人間は週数時間の関与でMRRが成長</p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="level-foot">
+          <p class="foot-item"><span class="mono dim">TOOLS —</span> AGI級モデル · 独自推論基盤 · 独自ファインチューニング · フルオートエージェント群</p>
+          <p class="foot-item"><span class="mono dim">REQUIRED —</span> 高貴なる者の義務（<em>noblesse oblige</em>）。AI業界／人類全体の利益を優先する視座</p>
+          <p class="foot-item"><span class="mono dim">ARRIVAL —</span> シンギュラリティ到達後の起業家、AIを社会インフラとして提供する者</p>
+        </footer>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ─── CROSSROADS ─── -->
+  <section class="crossroads" id="crossroads">
+    <div class="chapter-marker">
+      <span class="mono">—— CROSSROADS ——</span>
+      <span class="mono dim">分 岐 点</span>
+    </div>
+    <h2 class="section-title">TWO PATHS,<br/><em>ONE SUMMIT.</em></h2>
+    <p class="section-sub">エンジニア／非エンジニアで、現実的な到達ラインは異なる。<br/>だが、最終地点は一つ。</p>
+
+    <div class="crossroads-table">
+      <div class="cr-row cr-head">
+        <div class="cr-cell mono">LV</div>
+        <div class="cr-cell mono">非エンジニア</div>
+        <div class="cr-cell mono">エンジニア</div>
+      </div>
+      <div class="cr-row"><div class="cr-cell cr-lv">I — III</div><div class="cr-cell">共通（業務固定化まで）</div><div class="cr-cell">共通</div></div>
+      <div class="cr-row star"><div class="cr-cell cr-lv">IV</div><div class="cr-cell"><em>★ 最初のゴール</em>：Artifactsで顧客に価値提供</div><div class="cr-cell">通過点</div></div>
+      <div class="cr-row"><div class="cr-cell cr-lv">V</div><div class="cr-cell">社内ツール／簡易SaaS を自分で作る</div><div class="cr-cell">現場のスタンダード</div></div>
+      <div class="cr-row star"><div class="cr-cell cr-lv">VI</div><div class="cr-cell"><em>★ 現実的な最終到達ライン</em>：業務24h無人化</div><div class="cr-cell">通過点</div></div>
+      <div class="cr-row"><div class="cr-cell cr-lv">VII</div><div class="cr-cell">プロダクトリードとして到達</div><div class="cr-cell"><em>★ 技術的本丸</em>：Claude Code / MCPを制す</div></div>
+      <div class="cr-row gold"><div class="cr-cell cr-lv">VIII</div><div class="cr-cell">ビジョン＋UX＋ドメインで<em>AIを価値に錬成</em></div><div class="cr-cell"><em>★ 商業的本丸</em>：AIプロダクトで収益化</div></div>
+      <div class="cr-row final"><div class="cr-cell cr-lv">IX</div><div class="cr-cell">AGI時代の起業家として到達</div><div class="cr-cell">最終地点：AIインフラ提供者</div></div>
+    </div>
+  </section>
+
+  <!-- ─── DIAGNOSIS (Multi-step) ─── -->
+  <section class="diagnosis" id="diagnosis">
+    <div class="chapter-marker">
+      <span class="mono">—— DIAGNOSIS ——</span>
+      <span class="mono dim">自 己 診 断</span>
+    </div>
+    <h2 class="section-title">WHAT IS<br/><em>YOUR RANK?</em></h2>
+    <p class="section-sub">10問の質問で、あなたのAIランクを判定します（約2分）。<br/><span class="mono small dim">── 診断・証明書は完全無料。SNSシェア／PNG保存のみ、無料登録をお願いします。</span></p>
+
+    <!-- Quiz wrapper -->
+    <div class="diag-wrapper" id="diagWrapper">
+
+      <!-- STEP 0: Intro / Name -->
+      <div class="diag-step" data-step="0" data-active="true">
+        <div class="step-inner">
+          <p class="step-kicker mono">STEP · 00 / BEGIN</p>
+          <h3 class="step-title">あなたの名前を<br/><em>証明書に刻みます。</em></h3>
+          <p class="step-desc">診断結果は、あなた専用の <strong>認定証（Certificate）</strong> として発行されます。証明書にお名前を記載するため、入力してください（後から変更可能）。</p>
+
+          <div class="step-field">
+            <label class="diag-name-label mono" for="diagName">YOUR NAME · 氏名</label>
+            <input type="text" class="diag-name-input" id="diagName" placeholder="例：茶圓 将裕 / Your Name" maxlength="40" autocomplete="name"/>
+          </div>
+
+          <div class="step-nav">
+            <button type="button" class="step-btn primary" id="beginBtn">
+              <span>診断を始める</span>
+              <span class="mono">→</span>
+            </button>
+          </div>
+
+          <p class="step-meta mono small dim">10 QUESTIONS · ~2 MIN · NO SIGNUP REQUIRED</p>
+        </div>
+      </div>
+
+      <!-- STEPS 1-10: Questions (populated by JS) -->
+      <div class="diag-quiz" id="diagQuiz"></div>
+
+      <!-- FINAL: Result + Certificate -->
+      <div class="diag-step diag-final" data-step="final">
+        <div class="step-inner">
+          <p class="step-kicker mono">RESULT · 結 果</p>
+          <h3 class="step-title">あなたのランクは<br/><em id="resultLabelJa">—</em></h3>
+          <p class="step-desc" id="resultDesc">—</p>
+
+          <!-- Certificate -->
+          <figure class="certificate" id="certificate">
+            <div class="cert-corner tl"></div>
+            <div class="cert-corner tr"></div>
+            <div class="cert-corner bl"></div>
+            <div class="cert-corner br"></div>
+
+            <div class="cert-inner">
+              <p class="cert-header mono">── CERTIFICATE OF THE AI RANK ──</p>
+              <p class="cert-sub mono dim">認 定 証 / OFFICIAL RECORD</p>
+
+              <p class="cert-intro">THIS CERTIFIES THAT</p>
+              <p class="cert-name" id="certName">—— YOUR NAME ——</p>
+              <p class="cert-verb">HAS ATTAINED THE RANK OF</p>
+
+              <div class="cert-rank-block">
+                <span class="cert-numeral" id="certNumeral">—</span>
+                <span class="cert-name-en" id="certTitleEn">UNRANKED</span>
+                <span class="cert-name-ja" id="certTitleJa">未診断</span>
+              </div>
+
+              <p class="cert-definition" id="certDefinition">診断を完了して、あなたのランクを確定してください。</p>
+
+              <div class="cert-footer">
+                <div class="cert-sign">
+                  <p class="mono small">ISSUED BY</p>
+                  <p class="cert-brand">CHAEN</p>
+                  <p class="mono small dim">AI 格付けランク · MMXXVI</p>
+                </div>
+                <div class="cert-seal" aria-hidden="true">
+                  <svg viewBox="0 0 100 100" width="80" height="80">
+                    <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="0.6"/>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="currentColor" stroke-width="0.4"/>
+                    <text x="50" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="5" fill="currentColor">THE AI RANK</text>
+                    <text x="50" y="58" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="14" font-weight="600" fill="currentColor">AIR</text>
+                    <text x="50" y="68" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.5" fill="currentColor">· MMXXVI ·</text>
+                  </svg>
+                </div>
+                <div class="cert-serial">
+                  <p class="mono small">SERIAL №</p>
+                  <p class="cert-serial-num mono" id="certSerial">0000-0000-0000</p>
+                  <p class="mono small dim" id="certDate">—— / —— / ——</p>
+                </div>
+              </div>
+            </div>
+          </figure>
+
+          <!-- Share actions -->
+          <div class="share-bar">
+            <button type="button" class="share-btn" id="shareX">
+              <span class="mono">▸</span>
+              <span>SHARE TO X</span>
+            </button>
+            <button type="button" class="share-btn" id="shareLinkedIn">
+              <span class="mono">▸</span>
+              <span>SHARE TO LINKEDIN</span>
+            </button>
+            <button type="button" class="share-btn ghost" id="downloadPng">
+              <span class="mono">↓</span>
+              <span>SAVE CERTIFICATE</span>
+            </button>
+          </div>
+          <p class="share-note mono small dim">※ シェア・保存には、簡単な無料登録（氏名・メール・会社名）が必要です。</p>
+
+          <div class="step-nav">
+            <button type="button" class="step-btn ghost" id="backToQuizBtn">
+              <span class="mono">←</span>
+              <span>質問に戻る</span>
+            </button>
+            <button type="button" class="step-btn ghost" id="retakeBtn">
+              <span class="mono">↺</span>
+              <span>最初からやり直す</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Progress bar (shown during quiz) -->
+    <div class="diag-progress" id="diagProgress">
+      <div class="diag-progress-meta">
+        <span class="mono">QUESTION <span id="stepNow">1</span> / <span id="stepTotal">10</span></span>
+        <span class="mono dim" id="progressLabel">— IN PROGRESS —</span>
+      </div>
+      <div class="diag-progress-track"><div class="diag-progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- Quiz navigation (shown during questions) -->
+    <div class="diag-nav" id="diagNav">
+      <button type="button" class="step-btn ghost" id="prevBtn">
+        <span class="mono">←</span>
+        <span>戻る</span>
+      </button>
+      <button type="button" class="step-btn primary" id="nextBtn" disabled>
+        <span>次へ</span>
+        <span class="mono">→</span>
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ─── FOR ENTERPRISE ─── -->
+  <section class="enterprise" id="enterprise">
+    <div class="chapter-marker">
+      <span class="mono">—— FOR ENTERPRISE ——</span>
+      <span class="mono dim">法 人 向 け</span>
+    </div>
+    <h2 class="section-title">BRING THE AI RANK<br/><em>TO YOUR ORGANIZATION.</em></h2>
+    <p class="section-sub">THE AI RANK を <em>法人向け診断ツール</em> として提供予定。<br/>社員一人ひとりのAIレベルを可視化し、<em>組織としてのAI成熟度</em> を診断します。</p>
+
+    <div class="ent-grid">
+      <div class="ent-card">
+        <p class="ent-num mono">FEATURE · 01</p>
+        <h3 class="ent-title">全社員のAIレベル診断</h3>
+        <p class="ent-desc">社員全員に診断を配布。個人／部署／全社のAI成熟度を一枚のレポートに可視化。</p>
+      </div>
+      <div class="ent-card">
+        <p class="ent-num mono">FEATURE · 02</p>
+        <h3 class="ent-title">部署別ベンチマーク</h3>
+        <p class="ent-desc">営業・開発・バックオフィス別のAI活用度を他社比較。重点投資エリアが一目でわかる。</p>
+      </div>
+      <div class="ent-card">
+        <p class="ent-num mono">FEATURE · 03</p>
+        <h3 class="ent-title">カスタム質問設計</h3>
+        <p class="ent-desc">自社のツールスタック・業務特性に合わせて質問をカスタマイズ。実態に即した診断結果。</p>
+      </div>
+      <div class="ent-card">
+        <p class="ent-num mono">FEATURE · 04</p>
+        <h3 class="ent-title">成長トラッキング</h3>
+        <p class="ent-desc">四半期／年次での再診断により、AI研修・導入施策の効果を定量的に追跡。</p>
+      </div>
+      <div class="ent-card">
+        <p class="ent-num mono">FEATURE · 05</p>
+        <h3 class="ent-title">個別研修プログラム</h3>
+        <p class="ent-desc">診断結果に応じて、レベル別の研修・ワークショップ・伴走支援を提供。</p>
+      </div>
+      <div class="ent-card">
+        <p class="ent-num mono">FEATURE · 06</p>
+        <h3 class="ent-title">役員向けレポート</h3>
+        <p class="ent-desc">経営層向けに、組織のAI成熟度と投資対効果を整理したエグゼクティブサマリーを発行。</p>
+      </div>
+    </div>
+
+    <div class="ent-pricing">
+      <div class="ent-pricing-block">
+        <p class="mono small dim">INDIVIDUAL</p>
+        <p class="ent-pricing-title">個人診断</p>
+        <p class="ent-pricing-price">FREE</p>
+        <p class="ent-pricing-note mono small dim">診断・証明書発行は無料<br/>SNSシェアには無料登録が必要</p>
+      </div>
+      <div class="ent-pricing-block primary">
+        <p class="mono small dim">ENTERPRISE</p>
+        <p class="ent-pricing-title">法人診断ツール</p>
+        <p class="ent-pricing-price">有料提供 <span class="coming">COMING SOON</span></p>
+        <p class="ent-pricing-note mono small dim">社員数・機能に応じた価格体系<br/>先行お問い合わせ受付中</p>
+      </div>
+    </div>
+
+    <div class="ent-cta">
+      <a href="mailto:contact@ai-rank.jp?subject=THE%20AI%20RANK%20%E6%B3%95%E4%BA%BA%E5%B0%8E%E5%85%A5%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" class="cta-button">
+        <span class="mono">▸</span>
+        <span>CONTACT FOR ENTERPRISE</span>
+      </a>
+      <p class="mono small dim">先行ウェイトリストに登録</p>
+    </div>
+  </section>
+
+  <!-- ─── PRINCIPLES ─── -->
+  <section class="principles" id="principles">
+    <div class="chapter-marker">
+      <span class="mono">—— PRINCIPLES ——</span>
+      <span class="mono dim">四 原 則</span>
+    </div>
+    <h2 class="section-title">THE FOUR<br/><em>CANONS.</em></h2>
+
+    <ol class="principles-list">
+      <li>
+        <span class="principle-num">I</span>
+        <div class="principle-body">
+          <h3>実行力 ＞ 知識量</h3>
+          <p>「知っている」ではなく「回している」で測る。</p>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">II</span>
+        <div class="principle-body">
+          <h3>公開／配布 ＞ 自分用</h3>
+          <p>自分専用で終わるものは1段下がる（Lv.III は自分用が起点）。</p>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">III</span>
+        <div class="principle-body">
+          <h3>継続稼働 ＞ 単発</h3>
+          <p>24時間回っている仕組みを持つ者が上位。</p>
+        </div>
+      </li>
+      <li>
+        <span class="principle-num">IV</span>
+        <div class="principle-body">
+          <h3>他者貢献 ＞ 自己効率化</h3>
+          <p>他者・業界・人類の生産性まで上げられる者が最上位。</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ─── COLOPHON ─── -->
+  <footer class="colophon" id="colophon">
+    <div class="chapter-marker">
+      <span class="mono">—— COLOPHON ——</span>
+      <span class="mono dim">奥 付</span>
+    </div>
+
+    <div class="colophon-grid">
+      <div class="col-block">
+        <p class="mono small dim">PUBLISHED BY</p>
+        <p class="col-value">CHAEN</p>
+      </div>
+      <div class="col-block">
+        <p class="mono small dim">EDITION</p>
+        <p class="col-value">MMXXVI · VOL. I</p>
+      </div>
+      <div class="col-block">
+        <p class="mono small dim">TYPESET IN</p>
+        <p class="col-value mono-small">BRICOLAGE GROTESQUE · INSTRUMENT SANS · SHIPPORI MINCHO B1 · JETBRAINS MONO</p>
+      </div>
+      <div class="col-block">
+        <p class="mono small dim">CITATION</p>
+        <p class="col-value mono-small">"AI 格付けランク by CHAEN — 9 Levels from Beginner to Singularian."</p>
+      </div>
+    </div>
+
+    <div class="colophon-sign">
+      <p class="sign-quote">—— AIは、分類するためではなく、<em>超えていくため</em> にある。</p>
+      <p class="sign-author mono">CHAEN · 2026</p>
+    </div>
+
+    <!-- ─── ABOUT THE CREATOR ─── -->
+    <div class="creator-card">
+      <div class="creator-head">
+        <p class="mono small dim">ABOUT THE CREATOR · 作 成 者</p>
+      </div>
+      <div class="creator-body">
+        <div class="creator-meta">
+          <p class="creator-name">茶圓 将裕 <span class="creator-alt">／ Masahiro Chaen</span></p>
+          <p class="creator-role">AI起業家 / DigiRise, Inc. 代表 / "THE AI RANK" 監修</p>
+          <p class="creator-bio">
+            世界のAI最前線を日本語で発信。生成AIの活用法、Claude Code・エージェント設計、
+            AI-native プロダクト開発などをXで毎日発信しています。
+          </p>
+        </div>
+        <div class="creator-links">
+          <a href="https://x.com/masahirochaen" target="_blank" rel="noopener" class="creator-link">
+            <span class="mono link-label">X · TWITTER</span>
+            <span class="link-handle">@masahirochaen</span>
+            <span class="mono link-arrow">↗</span>
+          </a>
+          <a href="https://github.com/masahirochaen/the-ai-rank" target="_blank" rel="noopener" class="creator-link">
+            <span class="mono link-label">GITHUB · OSS</span>
+            <span class="link-handle">/masahirochaen/the-ai-rank</span>
+            <span class="mono link-arrow">↗</span>
+          </a>
+        </div>
+      </div>
+      <div class="creator-note">
+        <p class="mono small dim">
+          ◐ THE AI RANK は <strong>オープンソース</strong> です。<br/>
+          <em>「最強の世界共通 AI 格付けランク」</em> を皆で育てるプロジェクトとして公開しています。<br/>
+          意見・改善提案は GitHub の Issues まで。貢献してくれた方は Contributors に掲載します。
+        </p>
+      </div>
+    </div>
+
+    <div class="colophon-mark">
+      <span class="mono small dim">END · 了</span>
+      <span class="mono small dim">THE AI RANK © 2026 CHAEN</span>
+      <span class="mono small dim">NO. 0001</span>
+    </div>
+  </footer>
+
+  <!-- ─── SIGNUP MODAL ─── -->
+  <div class="modal" id="signupModal" aria-hidden="true" aria-modal="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-panel">
+      <button class="modal-close" aria-label="Close" data-close="1">×</button>
+      <p class="modal-kicker mono">—— QUICK SIGN UP ——</p>
+      <h3 class="modal-title" id="modalTitle">UNLOCK<br/><em>SHARE &amp; SAVE.</em></h3>
+      <p class="modal-desc">
+        診断・証明書発行は <strong>完全無料</strong> です。<br/>
+        SNSシェア・証明書の保存には、簡単な情報登録をお願いしています。<br/>
+        <span class="mono small dim">約30秒で完了します。</span>
+      </p>
+
+      <form class="auth-form" id="emailForm">
+        <div class="auth-field">
+          <label class="mono small dim" for="regName">NAME · 氏名</label>
+          <input type="text" id="regName" required placeholder="例：茶圓 将裕" autocomplete="name" maxlength="60"/>
+        </div>
+        <div class="auth-field">
+          <label class="mono small dim" for="regEmail">EMAIL · メールアドレス</label>
+          <input type="email" id="regEmail" required placeholder="name@example.com" autocomplete="email"/>
+        </div>
+        <div class="auth-field">
+          <label class="mono small dim" for="regCompany">COMPANY · 会社名（任意）</label>
+          <input type="text" id="regCompany" placeholder="例：株式会社◯◯" autocomplete="organization" maxlength="80"/>
+        </div>
+        <button class="auth-btn email" type="submit">
+          <span>登録して続ける</span>
+          <span class="mono">→</span>
+        </button>
+      </form>
+
+      <p class="modal-legal mono small dim">
+        登録は完全無料。情報はTHE AI RANKの証明書発行・シェア機能と、<br/>
+        法人向け診断ツール（有料）の先行案内（月1回以下）のみに使用します。いつでも解除可能。
+      </p>
+    </div>
+  </div>
+
+  <!-- ─── TOAST ─── -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js?v=20260419-3"></script>
+</body>
+</html>

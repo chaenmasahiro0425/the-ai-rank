@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#17130F"/>
+  <!-- Pyramid outline -->
+  <polygon points="32,10 52,54 12,54" fill="none" stroke="#8B2514" stroke-width="2.5"/>
+  <!-- Inner tier lines -->
+  <line x1="20" y1="38" x2="44" y2="38" stroke="#8B2514" stroke-width="1" opacity="0.6"/>
+  <line x1="16" y1="46" x2="48" y2="46" stroke="#8B2514" stroke-width="1" opacity="0.6"/>
+  <!-- R letter -->
+  <text x="32" y="30" text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="700" font-style="italic" fill="#C9A14A">R</text>
+</svg>
