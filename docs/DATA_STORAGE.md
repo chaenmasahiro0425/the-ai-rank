@@ -72,7 +72,7 @@ select rank, count(*) from signups group by rank order by rank;
 | `name` | text | 氏名（100文字以内） |
 | `email` | text | メール（200文字以内、RFC+使い捨てドメインブロック） |
 | `company` | text | 会社名（200文字以内・API層で必須）※DBスキーマ上は `null` 可だが `/api/signup` では必須バリデーション |
-| `rank` | smallint \| null | 診断結果のランク（0〜8） |
+| `rank` | smallint \| null | 診断結果のランク（0〜9） |
 | `client_at` | timestamptz \| null | クライアント時刻（参考値） |
 | `url` | text | 登録時のページURL |
 | `referrer` | text | 参照元URL |
@@ -105,8 +105,8 @@ select rank, count(*) from signups group by rank order by rank;
 2. 未登録なら → **登録モーダルが開く**
 3. 氏名・メール・会社名を入力
 4. 「登録して続ける」押下 → `completeAuth()`
-   - 1. localStorage に保存（再訪 autofill 用）
-   - 2. `POST /api/signup` → **Supabase に保存**
+   - 1. `POST /api/signup` → **Supabase に保存**（サーバー確定が最優先）
+   - 2. localStorage に保存（再訪 autofill 用。サーバー成功後のみ）
    - 3. モーダル閉じる
 5. X の投稿画面に `/c?rank=N&name=X` の URL が含まれる
 6. X が URL を fetch → ランク別の認定証 OG 画像を表示

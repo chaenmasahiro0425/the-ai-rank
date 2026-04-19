@@ -445,9 +445,12 @@ the-ai-rank/
 ```bash
 git clone https://github.com/chaenmasahiro0425/the-ai-rank.git
 cd the-ai-rank
-python3 -m http.server 4173
-# open http://localhost:4173
+npm install
+npx vercel dev          # runs static + /api/* handlers (recommended)
+# open http://localhost:3000
 ```
+
+If you only need to preview the static UI, `python3 -m http.server 4173` still works, but `/api/*` endpoints won't respond and signup/enterprise forms will fail.
 
 ### Deploy to Vercel
 

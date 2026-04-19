@@ -177,20 +177,19 @@ export default async function handler(req, res) {
       ip_present: Boolean(ip && ip !== "unknown"),
     }));
 
-    let stored = null;
     if (supabaseEnabled) {
+      // Let exceptions propagate to the outer catch so we return 5xx and the
+      // client can retry. Swallowing here would ACK leads we failed to store.
       const { error } = await supabase.from("enterprise_inquiries").insert(record);
       if (error) {
-        stored = false;
         console.error("[AIRANK:enterprise:insert_failed]", error.message || error);
-      } else {
-        stored = true;
+        return res.status(502).json({ error: "storage error" });
       }
     } else {
       console.warn("[AIRANK:enterprise:supabase_not_configured]");
     }
 
-    return res.status(200).json({ ok: true, stored });
+    return res.status(200).json({ ok: true });
   } catch (err) {
     console.error("[AIRANK:enterprise:error]", err?.message || err);
     return res.status(500).json({ error: "internal error" });

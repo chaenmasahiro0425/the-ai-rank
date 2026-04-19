@@ -451,9 +451,12 @@ the-ai-rank/
 ```bash
 git clone https://github.com/chaenmasahiro0425/the-ai-rank.git
 cd the-ai-rank
-python3 -m http.server 4173
-# → http://localhost:4173
+npm install
+npx vercel dev          # /api/* も含めてローカル起動（推奨）
+# → http://localhost:3000
 ```
+
+静的ファイルだけ確認したい場合は `python3 -m http.server 4173` でも開けるが、`/api/*` エンドポイントは動かないため登録フォームが失敗する。
 
 ### Vercel にデプロイ
 

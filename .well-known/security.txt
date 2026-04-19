@@ -6,4 +6,4 @@ Contact: https://github.com/chaenmasahiro0425/the-ai-rank/security/advisories/ne
 Expires: 2027-04-19T00:00:00.000Z
 Preferred-Languages: ja, en
 Canonical: https://ai-rank.org/.well-known/security.txt
-Policy: https://github.com/chaenmasahiro0425/the-ai-rank/blob/main/CONTRIBUTING.md
+Policy: https://github.com/chaenmasahiro0425/the-ai-rank/blob/main/SECURITY.md

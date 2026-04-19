@@ -14,6 +14,75 @@
 //
 const SIGNUP_WEBHOOK = "/api/signup"; // Vercel Serverless Function (api/signup.js)
 
+/* ─── AUTH STORAGE (localStorage with TTL) ───
+   Persist autofill/auth data for returning visitors. TTL ensures old
+   session data on shared machines eventually expires. */
+const AUTH_KEY = "airank:auth";
+const AUTH_TTL_MS = 90 * 24 * 60 * 60 * 1000; // 90 days
+
+function readAuth() {
+  try {
+    const raw = localStorage.getItem(AUTH_KEY);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || typeof obj !== "object") return null;
+    // Legacy entries (written before TTL was introduced) have no `_expires`.
+    // Treat them as expired so returning users re-confirm on shared devices.
+    if (!Number.isFinite(obj._expires) || Date.now() > obj._expires) {
+      localStorage.removeItem(AUTH_KEY);
+      return null;
+    }
+    return obj;
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeAuth(obj) {
+  try {
+    const payload = { ...obj, _expires: Date.now() + AUTH_TTL_MS };
+    localStorage.setItem(AUTH_KEY, JSON.stringify(payload));
+  } catch (e) { /* quota / disabled — ignore */ }
+}
+
+/* ─── FOCUS TRAP ───
+   Keep Tab navigation inside an open modal for a11y / screen readers. */
+function trapFocus(container) {
+  if (!container) return () => {};
+  // Exclude tabindex="-1" so honeypot inputs never receive focus.
+  const selector = [
+    'a[href]:not([tabindex="-1"])',
+    'button:not([disabled]):not([tabindex="-1"])',
+    'input:not([disabled]):not([type=hidden]):not([tabindex="-1"])',
+    'select:not([disabled]):not([tabindex="-1"])',
+    'textarea:not([disabled]):not([tabindex="-1"])',
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(",");
+  const lastActive = document.activeElement;
+
+  function onKey(e) {
+    if (e.key !== "Tab") return;
+    const focusables = container.querySelectorAll(selector);
+    if (!focusables.length) { e.preventDefault(); return; }
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement;
+    if (e.shiftKey) {
+      if (active === first || !container.contains(active)) { last.focus(); e.preventDefault(); }
+    } else {
+      if (active === last) { first.focus(); e.preventDefault(); }
+    }
+  }
+
+  container.addEventListener("keydown", onKey);
+  return () => {
+    container.removeEventListener("keydown", onKey);
+    if (lastActive && typeof lastActive.focus === "function") {
+      try { lastActive.focus(); } catch (e) {}
+    }
+  };
+}
+
 const LEVELS = [
   { num: "I",    en: "THE BEGINNER",       ja: "ビギナー",             def: "汎用AIの無料版を、検索・備忘録の延長として使う段階。" },
   { num: "II",   en: "THE POWER USER",     ja: "パワーユーザー",       def: "汎用AIの有料プランと特化業務型AIを、用途別に使い分ける段階。" },
@@ -118,80 +187,8 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
-/* ═══════════════════════════════════════════
-   1. CURSOR
-   ═══════════════════════════════════════════ */
-(function cursor() {
-  // Skip on touch / small viewports / reduced-motion.
-  if (matchMedia("(max-width: 900px)").matches) return;
-  if (matchMedia("(pointer: coarse)").matches) return;
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  const outer = $("#cursorOuter");
-  const inner = $("#cursorInner");
-  if (!outer || !inner) return;
-
-  let mx = 0, my = 0, ox = 0, oy = 0;
-  let ready = false;
-  let rafId = 0;
-
-  const EASE = 0.32; // higher = snappier catch-up (was 0.18, felt floaty)
-  const EPSILON = 0.05;
-
-  function setInner(x, y) {
-    inner.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-  }
-  function setOuter(x, y) {
-    outer.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-  }
-
-  function tick() {
-    const dx = mx - ox;
-    const dy = my - oy;
-    if (Math.abs(dx) < EPSILON && Math.abs(dy) < EPSILON) {
-      // Snap to final position and stop rAF to save battery.
-      ox = mx; oy = my;
-      setOuter(ox, oy);
-      rafId = 0;
-      return;
-    }
-    ox += dx * EASE;
-    oy += dy * EASE;
-    setOuter(ox, oy);
-    rafId = requestAnimationFrame(tick);
-  }
-
-  function onMove(e) {
-    mx = e.clientX;
-    my = e.clientY;
-    setInner(mx, my);
-    if (!ready) {
-      // First-move: place outer at the same point so no "fly-in" from origin.
-      ox = mx; oy = my;
-      setOuter(ox, oy);
-      document.body.classList.add("cursor-ready");
-      ready = true;
-    }
-    if (!rafId) rafId = requestAnimationFrame(tick);
-  }
-
-  document.addEventListener("mousemove", onMove, { passive: true });
-  document.addEventListener("mouseenter", () => document.body.classList.remove("cursor-out"));
-  document.addEventListener("mouseleave", () => document.body.classList.add("cursor-out"));
-  // When window loses focus, hide too (e.g., cmd-tab)
-  window.addEventListener("blur", () => document.body.classList.add("cursor-out"));
-  window.addEventListener("focus", () => document.body.classList.remove("cursor-out"));
-
-  const hoverables = "a, button, input, select, textarea, label, .type-card, .cr-row, .ent-card, .share-btn, .cta-button, .tier, .diag-option, .step-btn, .hero-cta, .chk-item, .rad-item";
-  document.addEventListener("mouseover", (e) => {
-    if (e.target.closest(hoverables)) document.body.classList.add("cursor-hover");
-  });
-  document.addEventListener("mouseout", (e) => {
-    if (e.target.closest(hoverables)) document.body.classList.remove("cursor-hover");
-  });
-  document.addEventListener("mousedown", () => document.body.classList.add("cursor-press"));
-  document.addEventListener("mouseup", () => document.body.classList.remove("cursor-press"));
-})();
+/* Custom cursor removed 2026-04-19 — hover offsets misaligned.
+   System cursor is used throughout. */
 
 /* ═══════════════════════════════════════════
    2. SCROLL PROGRESS + MASTHEAD + FOLIO
@@ -533,10 +530,8 @@ function el(tag, attrs = {}, ...children) {
   });
 
   function isAuthed() {
-    try {
-      const s = JSON.parse(localStorage.getItem("airank:auth") || "null");
-      return !!(s && s.name && s.email && s.company);
-    } catch (e) { return false; }
+    const s = readAuth();
+    return !!(s && s.name && s.email && s.company);
   }
   function doShareX() {
     const lvlEn = $("#certTitleEn")?.textContent || "";
@@ -819,6 +814,7 @@ function el(tag, attrs = {}, ...children) {
 /* ═══════════════════════════════════════════
    5. MODAL
    ═══════════════════════════════════════════ */
+let __signupModalReleaseFocus = null;
 function openModal(intent) {
   const modal = document.getElementById("signupModal");
   if (!modal) return;
@@ -826,6 +822,16 @@ function openModal(intent) {
   modal.setAttribute("aria-hidden", "false");
   modal.dataset.intent = intent || "";
   document.body.style.overflow = "hidden";
+  __signupModalReleaseFocus = trapFocus(modal);
+  // Target the visible name field explicitly — querySelector returns the first
+  // DOM match, not the first selector match, and the honeypot input lives above
+  // #regName in source order.
+  setTimeout(() => {
+    const target = modal.querySelector("#regName")
+      || modal.querySelector("input:not([tabindex='-1']):not([type='hidden'])")
+      || modal.querySelector("button");
+    target?.focus();
+  }, 80);
 }
 function closeModal() {
   const modal = document.getElementById("signupModal");
@@ -833,6 +839,7 @@ function closeModal() {
   modal.classList.remove("open");
   modal.setAttribute("aria-hidden", "true");
   document.body.style.overflow = "";
+  if (__signupModalReleaseFocus) { __signupModalReleaseFocus(); __signupModalReleaseFocus = null; }
 }
 (function modalWiring() {
   const modal = document.getElementById("signupModal");
@@ -845,13 +852,13 @@ function closeModal() {
   const emailI = document.getElementById("regEmail");
   const companyI = document.getElementById("regCompany");
 
-  // Hydrate from prior registration if exists
-  try {
-    const saved = JSON.parse(localStorage.getItem("airank:auth") || "{}");
+  // Hydrate from prior registration if exists (expired entries auto-cleared)
+  {
+    const saved = readAuth() || {};
     if (saved.name && nameI) nameI.value = saved.name;
     if (saved.email && emailI) emailI.value = saved.email;
     if (saved.company && companyI) companyI.value = saved.company;
-  } catch (e) {}
+  }
 
   async function completeAuth(data) {
     // Strip hp (honeypot) from persisted payload — we only send it to the API
@@ -920,9 +927,9 @@ function closeModal() {
       }
     }
 
-    // 2) Persist locally (strip hp — honeypot never touches storage)
+    // 2) Persist locally (strip hp/ua/referrer — never touch storage)
     const { hp: _hp, ua: _ua, referrer: _ref, ...persistable } = payload;
-    localStorage.setItem("airank:auth", JSON.stringify(persistable));
+    writeAuth(persistable);
 
     // 3) Proceed with the intended action
     const intent = modal.dataset.intent;
@@ -962,16 +969,19 @@ function closeModal() {
   const modal = document.getElementById("enterpriseModal");
   if (!modal) return;
 
+  let releaseFocus = null;
   function openEnt() {
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    releaseFocus = trapFocus(modal);
     setTimeout(() => modal.querySelector("#entCompany")?.focus(), 80);
   }
   function closeEnt() {
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    if (releaseFocus) { releaseFocus(); releaseFocus = null; }
   }
 
   document.getElementById("openEnterpriseForm")?.addEventListener("click", openEnt);

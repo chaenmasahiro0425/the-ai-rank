@@ -46,7 +46,8 @@ const I18N = {
     "diag.marker2": "自 己 診 断",
     "diag.title1":  "WHAT IS",
     "diag.title2":  "YOUR RANK?",
-    "diag.sub":     "10問の質問で、あなたのAIランクを判定します（約2分）。<br>── 診断・証明書は完全無料。SNSシェア／PNG保存のみ、無料登録をお願いします。",
+    "diag.sub":      "10問の質問で、あなたのAIランクを判定します（約2分）。",
+    "diag.sub.note": "── 診断・証明書は完全無料。SNSシェア／PNG保存のみ、無料登録をお願いします。",
 
     "ent.marker1": "—— FOR ENTERPRISE ——",
     "ent.marker2": "法 人 向 け",
@@ -102,7 +103,8 @@ const I18N = {
     "diag.marker2": "SELF-ASSESSMENT",
     "diag.title1":  "WHAT IS",
     "diag.title2":  "YOUR RANK?",
-    "diag.sub":     "Answer 10 short questions to find your AI rank (~2 minutes).<br>── Diagnosis and certificate are completely free. Only SNS sharing / PNG export require a quick free sign-up.",
+    "diag.sub":      "Answer 10 short questions to find your AI rank (~2 minutes).",
+    "diag.sub.note": "── Diagnosis and certificate are completely free. Only SNS sharing / PNG export require a quick free sign-up.",
 
     "ent.marker1": "—— FOR ENTERPRISE ——",
     "ent.marker2": "FOR ORGANIZATIONS",

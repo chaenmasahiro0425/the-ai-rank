@@ -42,9 +42,6 @@
   <meta name="twitter:image:alt" content="THE AI RANK — 9段階AIスキル格付けランク by CHAEN" />
 
   <link rel="canonical" href="https://ai-rank.org/" />
-  <link rel="alternate" hreflang="ja" href="https://ai-rank.org/" />
-  <link rel="alternate" hreflang="en" href="https://ai-rank.org/" />
-  <link rel="alternate" hreflang="x-default" href="https://ai-rank.org/" />
 
   <!-- Icons & PWA -->
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
@@ -62,7 +59,7 @@
   <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Shippori+Mincho+B1:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300..700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css?v=20260419-14" />
+  <link rel="stylesheet" href="style.css?v=20260419-15" />
 
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -142,10 +139,6 @@
   <!-- ─── texture ─── -->
   <div class="grain" aria-hidden="true"></div>
   <div class="paper-noise" aria-hidden="true"></div>
-
-  <!-- ─── custom cursor (desktop only) ─── -->
-  <div class="cursor-outer" id="cursorOuter" aria-hidden="true"></div>
-  <div class="cursor-inner" id="cursorInner" aria-hidden="true"></div>
 
   <!-- ─── scroll progress ─── -->
   <div class="scroll-bar" id="scrollBar" aria-hidden="true"></div>
@@ -231,11 +224,11 @@
       </a>
     </div>
 
-    <nav class="hero-scroll">
+    <div class="hero-scroll" aria-hidden="true">
       <span class="mono" data-i18n="hero.scroll">SCROLL TO ENTER</span>
       <span class="vertical-line"></span>
       <span class="mono small dim" data-i18n="hero.scroll.sub">09 CHAPTERS · 1 PYRAMID · 10 QUESTIONS</span>
-    </nav>
+    </div>
   </section>
 
   <!-- ─── PYRAMID / OVERVIEW ─── -->
@@ -952,7 +945,8 @@
       <span class="mono dim" data-i18n="diag.marker2">自 己 診 断</span>
     </div>
     <h2 class="section-title"><span data-i18n="diag.title1">WHAT IS</span><br/><em data-i18n="diag.title2">YOUR RANK?</em></h2>
-    <p class="section-sub" data-i18n-html="diag.sub">10問の質問で、あなたのAIランクを判定します（約2分）。<br/><span class="mono small dim">── 診断・証明書は完全無料。SNSシェア／PNG保存のみ、無料登録をお願いします。</span></p>
+    <p class="section-sub" data-i18n="diag.sub">10問の質問で、あなたのAIランクを判定します（約2分）。</p>
+    <p class="section-sub mono small dim" data-i18n="diag.sub.note">── 診断・証明書は完全無料。SNSシェア／PNG保存のみ、無料登録をお願いします。</p>
 
     <!-- Quiz wrapper -->
     <div class="diag-wrapper" id="diagWrapper">
@@ -1325,6 +1319,9 @@
           <label class="mono small dim" for="regCompany">COMPANY · 会社名</label>
           <input type="text" id="regCompany" required placeholder="例：株式会社◯◯" autocomplete="organization" maxlength="80"/>
         </div>
+        <p class="auth-privacy mono small dim">
+          送信すると <a href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a> に同意したものとみなします。
+        </p>
         <button class="auth-btn email" type="submit">
           <span>登録して続ける</span>
           <span class="mono">→</span>
@@ -1413,6 +1410,9 @@
           <textarea id="entMessage" rows="3" placeholder="例：営業部門200名のAI活用レベルを可視化したい／社内研修を設計してほしい 等" maxlength="2000"></textarea>
         </div>
 
+        <p class="auth-privacy mono small dim">
+          送信すると <a href="/privacy" target="_blank" rel="noopener">プライバシーポリシー</a> に同意したものとみなします。
+        </p>
         <button class="auth-btn email" type="submit">
           <span>送信する</span>
           <span class="mono">→</span>
@@ -1429,8 +1429,8 @@
   <!-- ─── TOAST ─── -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="i18n.js?v=20260419-14"></script>
-  <script src="script.js?v=20260419-14"></script>
+  <script src="i18n.js?v=20260419-15"></script>
+  <script src="script.js?v=20260419-15"></script>
 
   <!-- Vercel Analytics & Speed Insights (no-op if not enabled in dashboard) -->
   <script defer src="/_vercel/insights/script.js"></script>
