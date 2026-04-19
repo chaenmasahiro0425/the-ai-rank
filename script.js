@@ -526,8 +526,11 @@ function closeModal() {
   } catch (e) {}
 
   function completeAuth(data) {
+    // Strip hp (honeypot) from persisted payload — we only send it to the API
+    const { hp, ...rest } = data;
     const payload = {
-      ...data,
+      ...rest,
+      hp,
       at: Date.now(),
       rank: (() => { try { return JSON.parse(localStorage.getItem("airank:v2") || "{}").rank; } catch(e){ return null; } })(),
       referrer: document.referrer || "",
@@ -561,9 +564,10 @@ function closeModal() {
     const name = (nameI?.value || "").trim();
     const email = (emailI?.value || "").trim();
     const company = (companyI?.value || "").trim();
+    const hp = (document.getElementById("hp")?.value || "").trim();
     if (!name) { toast("氏名を入力してください"); nameI?.focus(); return; }
-    if (!email || !email.includes("@")) { toast("有効なメールアドレスを入力してください"); emailI?.focus(); return; }
-    completeAuth({ name, email, company });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { toast("有効なメールアドレスを入力してください"); emailI?.focus(); return; }
+    completeAuth({ name, email, company, hp });
   });
 })();
 

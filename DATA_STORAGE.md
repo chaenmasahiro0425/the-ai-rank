@@ -1,110 +1,166 @@
 # 🗄 登録データの保管先について
 
-## 現状（2026-04-19 時点）
+## TL;DR（現状）
 
-登録されたデータ（氏名・メール・会社名）は、**現在はユーザーのブラウザの localStorage のみ** に保存されています。
+登録フォーム（氏名・メール・会社名）から送信されたデータは、今は以下の2箇所だけに流れます：
 
-```js
-// script.js 内
-localStorage.setItem("airank:auth", JSON.stringify({
-  name, email, company, at: 1681900000000,
-  rank, referrer, url, ua
-}));
-```
+1. **ユーザーのブラウザ**（`localStorage`）
+2. **Vercel Serverless Function のログ**（`console.log`）
 
-- **どこにある？** → 各ユーザーのブラウザ内（サーバーには送信されていません）
-- **運営側に届く？** → **現在は届きません**（集めたデータをあなたが見ることは不可）
-- **ブラウザを消したら？** → データは消えます
-- **別のブラウザで診断した時** → 別データとして扱われます
+**つまり運営側にデータベースはまだありません。** Vercelログは検索はできますが、SQLクエリも不可、期限切れ（7〜30日）で消えます。
 
-つまり、現状は**運営側にはデータが一切届いていない**状態です。
+本格運用するには、下記の「永続DBに接続する」で `SIGNUP_FORWARD_URL` を設定してください。
 
 ---
 
-## ✅ 本番運用するには（運営側でデータを受け取る）
+## 📊 データの流れ（今）
 
-`script.js` の先頭に、以下の行があります：
-
-```js
-const SIGNUP_WEBHOOK = ""; // ← ここにURLを入れると本番保存が有効になります
+```
+ [ User Browser ]
+      │
+      ├─ localStorage: 'airank:auth' ─────────────┐
+      │                                            │
+      │  POST /api/signup                          │
+      │                                            │
+      ▼                                            │
+[ Vercel Edge / Function ]                         │
+      │                                            │
+      ├─ Origin / Referer / Rate limit / Honeypot │
+      │                                            │
+      ├─ console.log('[AIRANK:signup]', record) ──┐
+      │                                            │
+      └─ (optional) fetch(SIGNUP_FORWARD_URL) ────┘
+                                                   │
+                                                   ▼
+                                     [ Vercel Logs (7-30d) ]
 ```
 
-ここに保存先のWebhook URLを入れると、登録時に自動でそのURLにPOSTされます（localStorageへの保存は継続）。
+ユーザーの `hp`（ハニーポット）や異常値は自動で弾かれます。
 
-### 選択肢：どこに溜めるか
+---
 
-| 方法 | 難易度 | コスト | 特徴 |
-|:---|:---:|:---:|:---|
-| **Google Apps Script + スプレッドシート** | ⭐ 簡単 | 無料 | 既存のGoogleアカウントで即時運用可 |
-| **Formspree** | ⭐ 簡単 | 月50件まで無料 / 以降$10〜 | 設定不要、メール通知付き |
-| **Airtable Webhook** | ⭐⭐ 中 | 無料枠あり | データベース的に使える |
-| **Notion API (Proxy経由)** | ⭐⭐ 中 | 無料 | Notionで管理するなら便利 |
-| **Supabase** | ⭐⭐⭐ やや手間 | 無料枠あり | 本格運用向け（認証・DB） |
-| **Vercel Serverless Function + KV** | ⭐⭐⭐ やや手間 | 無料枠あり | 同じVercel内で完結 |
+## 🔧 永続DBに接続する選択肢
 
-### 推奨：**Google Apps Script（最速 & 無料）**
+`SIGNUP_FORWARD_URL` 環境変数に以下のいずれかのURLを入れるだけ：
 
-1. Google Sheets で新規スプレッドシート作成
-2. 拡張機能 → Apps Script
-3. 以下のコードを貼り付け：
+### 推奨 ① **Google Sheets + Apps Script**（5分・無料）
+
+1. Google Sheets で空のスプレッドシート作成
+2. 「拡張機能」→「Apps Script」
+3. 以下を貼って保存：
 
 ```javascript
 function doPost(e) {
   const sheet = SpreadsheetApp.getActiveSheet();
   const data = JSON.parse(e.postData.contents);
   sheet.appendRow([
-    new Date(data.at),
+    new Date(data.at || Date.now()),
     data.name || "",
     data.email || "",
     data.company || "",
     data.rank || "",
     data.referrer || "",
     data.url || "",
-    data.ua || ""
+    data.ip || "",
+    data.ua || "",
   ]);
-  return ContentService.createTextOutput(JSON.stringify({ok: true}))
+  return ContentService.createTextOutput(JSON.stringify({ ok: true }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
-4. デプロイ → ウェブアプリとしてデプロイ
-5. 「アクセス」を「全員」に設定
-6. デプロイ後のURLをコピー
-7. `script.js` の `SIGNUP_WEBHOOK` にペースト
-8. Vercel再デプロイ
+4. 「デプロイ」→「ウェブアプリとしてデプロイ」
+5. アクセス権: 「全員」
+6. デプロイ後のURL（`.../exec`）をコピー
+7. Vercel Dashboard → Settings → Environment Variables に `SIGNUP_FORWARD_URL` を追加
+8. 再デプロイ
 
-これで登録の度にスプレッドシートに自動追記されます。
+これで登録のたびにスプレッドシートに1行ずつ追加されます。
+
+### 推奨 ② **Slack Webhook**（30秒・無料）
+
+リアルタイム通知が欲しい場合：
+
+1. Slack で Incoming Webhook を作成
+2. URL を `SIGNUP_FORWARD_URL` に設定
+3. ただし Slack の JSON 形式に合わせて api/signup.js 側を調整する必要あり
+
+### 推奨 ③ **Vercel Postgres / KV**（本格的）
+
+- `vercel storage create` で Postgres / KV DB を作成
+- `api/signup.js` を書き換えて `@vercel/postgres` or `@vercel/kv` から書き込み
+- 本格運用・分析するならこれ
+
+### 推奨 ④ **Notion API**
+
+1. Notion DB 作成（name, email, company, rank 列）
+2. Notion インテグレーション作成、API key取得
+3. 中間 Apps Script or Vercel function で Notion API を叩く
+4. そのURLを `SIGNUP_FORWARD_URL` に
+
+### 推奨 ⑤ **Airtable / Formspree**
+
+- **Formspree**: 最速。無料プランで月50件。直接 URL 設定すれば OK
+- **Airtable**: Webhook は別途 Zapier / Make 経由が必要
 
 ---
 
-## 🔐 プライバシーとGDPR・個人情報保護法
+## 🔐 セキュリティ（自動で有効）
 
-登録された時点で個人情報を取得しているので、**プライバシーポリシーの掲載**を推奨します：
+現状の `api/signup.js` は以下をデフォルトで実施：
 
-- 収集目的：証明書発行・シェア機能・法人向け診断の先行案内
-- 保管期間：目的終了後2年（任意）
-- 第三者提供：なし（分析ツールを除く）
-- 削除依頼の受付窓口：メールアドレス
-
-テンプレが必要であれば生成できます。
+- ✅ **Origin チェック** — `ai-rank.org` / `the-ai-rank.vercel.app` / localhost からのみ受付
+- ✅ **Referer チェック** — 別サイトからの POST をブロック
+- ✅ **ハニーポット** — 隠しフィールド `hp` にボットが入力すると無言でスルー
+- ✅ **IPレートリミット** — 同一IPから1分間に5回超えでブロック（in-memory、serverless instance 単位）
+- ✅ **メール厳密検証** — RFC ライクな正規表現 + 使い捨てメールドメインをブロック
+- ✅ **最大文字数制限** — name 100 / email 200 / company 200
+- ✅ **Cache-Control: no-store** — キャッシュ汚染防止
+- ✅ **X-Robots-Tag: noindex** — 検索エンジンにクロールされない
 
 ---
 
-## 📤 X（Twitter）シェア時の登録フロー
+## 📤 X（Twitter）シェア時のフロー
 
-1. 診断完了 → 証明書画面で「SHARE TO X」を押す
-2. 未登録なら → **登録モーダルが開く**（氏名・メール・会社名）
-3. 「登録して続ける」押下 → `completeAuth()` 実行
-   - localStorage に保存
-   - `SIGNUP_WEBHOOK` が設定されていれば、そこにもPOST
-4. モーダル閉じる → 自動的にX投稿インテントが開く
+1. 診断完了 → 「SHARE TO X」クリック
+2. 未登録なら → **登録モーダルが開く**
+3. 氏名・メール・会社名を入力（hp は空のまま）
+4. 「登録して続ける」押下 → `completeAuth()` 実行
+   - 1. localStorage に保存（再訪時の autofill 用）
+   - 2. `POST /api/signup` — サーバーへ（失敗しても無言）
+   - 3. モーダル閉じる
+5. X の投稿画面が開き、**`/c?rank=N&name=X` の URL** が含まれる
+6. X が URL を fetch → **ランク別の認定証 OG 画像** を表示
 
 再訪時は登録済みなので、モーダルなしで直接シェアできます。
 
 ---
 
-## ❓ 質問フローの戻るボタン
+## 🛠 トラブルシュート
 
-- 各質問画面の左下に「← 戻る」ボタンがあります（`#prevBtn`）
-- 診断結果画面にも「← 質問に戻る」ボタンを追加しました（`#backToQuizBtn`）
-- 「最初からやり直す」（`#retakeBtn`）で診断リセット
+### データが来ない / ログに出ない
+
+1. Vercel Dashboard → プロジェクト → Logs で `[AIRANK:signup]` を検索
+2. 出ていればサーバーは受信済み → 外部転送側の問題
+3. 出ていなければフロントのフォーム送信に失敗 → ブラウザの DevTools Network で `/api/signup` を確認
+
+### 「Origin not allowed」 が返る
+
+`ALLOWED_ORIGINS` に本番ドメインを追加してください（`api/signup.js` 内）。
+
+### 「Too many requests」 が返る
+
+同一IPから連投した可能性。60秒待てば戻ります（デモ・開発用途）。
+本番で緩めたい場合は `RATE_LIMIT_MAX` を調整してください。
+
+---
+
+## ❓ 質疑応答の戻るボタン
+
+- ✅ 各質問カードの左上に「← 前の質問」ボタン（Q1は「氏名入力に戻る」）
+- ✅ 結果画面に「質問に戻る」ボタン（最後の質問に戻れる）
+- ✅ 「最初からやり直す」ボタン（診断をリセット）
+
+---
+
+最終更新: 2026-04-19

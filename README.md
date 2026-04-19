@@ -1,122 +1,132 @@
 # THE AI RANK 🎖️
 
-> **個人の AI 活用スキルを 9 段階で格付けする、世界共通のオープンな基準。**
+> **A 9-level global standard for measuring an individual's AI literacy.**
 >
-> あなたの AI 熟達度は、どこまで来ているか？
+> How far has your AI mastery actually come?
 
-🔗 **[ai-rank.org](https://ai-rank.org)** でいますぐ診断（約 2 分・無料）
+🌐 **Live:** [ai-rank.org](https://ai-rank.org) — take the 2-minute diagnostic (free)
+🇯🇵 **日本語README:** [README.ja.md](./README.ja.md)
 
 ![THE AI RANK OG Image](./og-image.png)
 
----
-
-## このプロジェクトについて
-
-2026 年、AI は「使えるかどうか」ではなく、**「どこまで使いこなしているか」** で人と組織の差が決まる時代になりました。
-
-THE AI RANK は、この **"AI 熟達度"** を誰でも共通言語で語れるように設計した、9 段階の格付けシステムです。
-
-- **発案・監修**：[CHAEN](https://x.com/masahirochaen)（個人プロジェクト）
-- **リリース**：2026 年 4 月
-- **ライセンス**：MIT（格付け思想・コード共に）
-- **ゴール**：このリポジトリで議論を集め、**「最強の世界共通 AI 格付けランク」** へ育てる
+![License](https://img.shields.io/badge/license-MIT-8B2514)
+![Status](https://img.shields.io/badge/status-live-brightgreen)
+![Edition](https://img.shields.io/badge/edition-MMXXVI·I-C9A14A)
 
 ---
 
-## 9 段階の全体像
+## What is THE AI RANK?
 
-下から順に：
+In 2026, AI has passed the "can you use it" phase. The real differentiator is **how far you actually use it** — and the gap between casual ChatGPT users and engineers running autonomous agent fleets has grown 10× or more.
 
-| Lv. | 称号 | 一言で言うと |
+**THE AI RANK** proposes a **common language** for this gap: nine clearly defined levels, from Beginner to Singularian. You take a 10-question diagnostic and receive a personalized certificate with your level.
+
+This repository is an **open, community-driven project** hosted as a single-creator initiative by **[CHAEN](https://x.com/masahirochaen)**.
+The goal: grow it into the **strongest universal AI literacy standard**, with input from contributors around the world.
+
+---
+
+## The 9 Levels
+
+From bottom to top:
+
+| Lv. | Title | In one line |
 |:---:|:---|:---|
-| **I**   | **ビギナー** / Beginner                   | 無料 AI を検索代わりに使う |
-| **II**  | **パワーユーザー** / Power User           | 汎用 AI 有料版＋特化型 AI を使い分け |
-| **III** | **ボットビルダー** / Bot Builder          | GPTs 等で自分の業務を固定化 |
-| **IV**  | **アーティファクター** / Artifactor       | Claude Artifacts 等で公開アプリを作る ★**非エンジニアの第一ゴール** |
-| **V**   | **バイブコーダー** / Vibe Coder           | 社内本番ツールを自然言語で作る |
-| **VI**  | **オートメーター** / Automator            | 業務を 24 時間自動稼働させる ★**非エンジニアの到達ライン** |
-| **VII** | **エージェントマスター** / Agent Master    | 事業タスクを AI に委譲 |
-| **VIII**| **AI アルケミスト** / AI Alchemist        | AI プロダクトで現実に収益化 ★**商業的本丸** |
-| **IX**  | **シンギュラリアン** / Singularian         | AI が会社そのものを運営 |
+| **I**    | **THE BEGINNER**       | Uses free AI as a search-engine replacement |
+| **II**   | **THE POWER USER**     | Subscribes to paid plans + mixes specialist AIs |
+| **III**  | **THE BOT BUILDER**    | Bakes own workflow into GPTs / Gems / Projects |
+| **IV**   | **THE ARTIFACTOR**     | Ships shareable mini-apps (Claude Artifacts / Lovable / v0) ★ **First goal for non-engineers** |
+| **V**    | **THE VIBE CODER**     | Builds internal tools & small external apps in natural language |
+| **VI**   | **THE AUTOMATOR**      | Runs 24/7 automated workflows, in-house and for clients ★ **Realistic ceiling for non-engineers** |
+| **VII**  | **THE AGENT MASTER**   | Delegates business-scale tasks to agent fleets |
+| **VIII** | **THE AI ALCHEMIST**   | Converts AI into actual revenue — live SaaS or core system ★ **Commercial summit** |
+| **IX**   | **THE SINGULARIAN**    | AI runs the company itself, including revenue |
 
-各段階の詳細は [ai-rank.org](https://ai-rank.org) で読めます。
-
----
-
-## 設計思想
-
-### なぜ「格付け」か？
-
-- 「ChatGPT を使っています」だけでは、実態のレベル差 **10 倍以上** を捉えられない
-- 採用の現場・自己評価・社内研修設計で、共通の物差しが必要
-- 単なる理論ではなく、**2026 年時点の最新 AI ツール群**（Claude Code / Artifacts / Manus / Lovable / Dify Auto / OpenClaw 等）を実戦的に反映
-
-### なぜ「世界共通」か？
-
-AI 熟達度は国境を越える普遍的な指標です。
-このリポジトリでは、国・業界・職種を越えた **共通言語** としてのランクシステムを目指します。
-
-### 4 つの原則
-
-1. **実行力 ＞ 知識量** — 「知っている」ではなく「回している」で測る
-2. **公開／配布 ＞ 自分用** — 自分専用で終わるものは 1 段下がる
-3. **継続稼働 ＞ 単発** — 24 時間回っている仕組みを持つ者が上位
-4. **他者貢献 ＞ 自己効率化** — 他者・業界・人類の生産性まで上げられる者が最上位
+Full descriptions, representative tools, and graduation criteria are at [ai-rank.org](https://ai-rank.org).
 
 ---
 
-## 🤝 貢献歓迎（Contributors Wanted）
+## Design Philosophy
 
-このプロジェクトは **皆で育てる** ことを前提に公開しています。
+### Why rank at all?
 
-### こんな貢献を歓迎します
+- "I use ChatGPT" no longer conveys the 10× skill gap that actually exists
+- Hiring, self-assessment, corporate training all need a **common yardstick**
+- Theory isn't enough — the levels must reflect **the 2026 tool stack** (Claude Code / Artifacts / Manus / Lovable / Dify Auto / OpenClaw, etc.)
 
-- **格付け基準の提案**：Lv.X の条件について議論／再定義の提案
-- **新しい段階の追加**：時代が進むごとに、新たな Lv. の必要性
-- **翻訳**：英語・中国語・韓国語・その他言語への展開
-- **診断質問の改善**：より精度の高い判定につながる質問設計
-- **UI／UX の改善**：Pull Request 歓迎
-- **事例共有**：Lv.X の人が実際にやっている業務例
+### Why "universal"?
 
-### 貢献方法
+AI literacy transcends borders. This repo targets a **shared cross-country language** for AI mastery — usable by HR teams in Tokyo, engineers in SF, and students in Berlin alike.
 
-1. **Issue を立てる** — バグ報告／提案はまず Issue で議論
-2. **Pull Request** — コード改善／誤字修正／新機能
-3. **Discussions** — 設計思想／哲学的議論
+### The four canons
 
-貢献してくれた方は、[Contributors](https://github.com/chaenmasahiro0425/the-ai-rank/graphs/contributors) に掲載されます。
+1. **Execution ＞ Knowledge** — "I've heard of it" doesn't count; "I run it weekly" does
+2. **Publishing ＞ Private use** — If nobody else can use what you built, drop one rank
+3. **Continuous operation ＞ One-shot** — Systems that run 24/7 outrank projects that don't
+4. **Contribution ＞ Self-productivity** — Lifting others' productivity outranks lifting only your own
 
 ---
 
-## 🧰 技術スタック
+## 🤝 Contribute — help build the world standard
 
-シンプルな静的 LP + Vercel Serverless Functions。
+This project is **meant to be built together**. We welcome:
+
+- 💡 **Level criteria proposals** — should the bar for Lv.V be higher/lower? Discuss in Issues
+- ➕ **New level suggestions** — as AI evolves, new stages will emerge (Lv.X anyone?)
+- 🌍 **Translations** — English / Chinese / Korean / Spanish / French / etc.
+- ❓ **Better diagnostic questions** — propose question changes to raise judging accuracy
+- 🎨 **UI / UX improvements** — PRs welcome on `index.html` / `style.css` / `script.js`
+- 📚 **Real-world case examples** — what does a Lv.VII person actually do all day?
+
+### How to contribute
+
+1. **Open an Issue** — bugs, proposals, questions — first discussion goes here
+2. **Pull Requests** — code improvements, typo fixes, new features
+3. **GitHub Discussions** — philosophical & design-level debates
+
+All contributors are listed on the [Contributors page](https://github.com/chaenmasahiro0425/the-ai-rank/graphs/contributors).
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 🧰 Tech Stack
+
+Minimal by design — a static landing page plus a handful of Vercel serverless functions.
 
 ```
 the-ai-rank/
-├── index.html          # メインページ
-├── style.css           # デザインシステム（Bricolage Grotesque / Instrument Sans / Shippori Mincho B1）
-├── script.js           # 診断ロジック・証明書生成・モーダル
-├── og-image.png        # OG/Twitter Card 画像（1200×630）
-├── og-preview.html     # OG 画像生成元 HTML（Playwright でスクリーンショット）
+├── index.html           # Main page (JP primary, JP/EN toggle via i18n.js)
+├── style.css            # Design system (Bricolage Grotesque / Instrument Sans / Shippori Mincho B1)
+├── script.js            # Quiz logic, certificate, modal
+├── i18n.js              # JP / EN translation dictionary & runtime swap
+├── og-image.png         # Default OG / Twitter card (1200×630)
+├── og-preview.html      # Source HTML rendered to og-image.png via Playwright
+├── og-cert-template.html # Template for per-rank certificate OG images
+├── og/rank-0.png … 9.png # Rank-specific certificate OG images
 ├── favicon.svg
 ├── api/
-│   └── signup.js       # 登録データを受けるエンドポイント
-├── vercel.json         # Vercel 設定
-├── POSTS.md            # X／ブログ投稿用文面
-└── DATA_STORAGE.md     # 登録データの保管先についての説明
+│   ├── signup.js        # Sign-up data endpoint (writes to Vercel logs + optional forward)
+│   └── cert.js          # Shareable certificate URL with rank-specific OG tags
+├── vercel.json          # Headers, rewrites, cache policy
+├── README.md            # English (this file)
+├── README.ja.md         # Japanese
+├── CONTRIBUTING.md
+├── POSTS.md             # Drafts for X / blog announcements
+├── DATA_STORAGE.md      # How sign-up data is stored & how to wire real persistence
+└── DNS_SETUP.md         # DNS setup notes for custom domains
 ```
 
-### ローカルで動かす
+### Run locally
 
 ```bash
 git clone https://github.com/chaenmasahiro0425/the-ai-rank.git
 cd the-ai-rank
 python3 -m http.server 4173
-# → http://localhost:4173
+# open http://localhost:4173
 ```
 
-### Vercel にデプロイ
+### Deploy to Vercel
 
 ```bash
 vercel --prod
@@ -124,67 +134,64 @@ vercel --prod
 
 ---
 
-## 📊 診断の仕組み
+## 📊 How the quiz works
 
-- 10 問のマルチステップクイズ（各問 4 択）
-- 回答クリックで自動的に次の質問へ（350ms ディレイ）
-- Q1〜Q9：各問が Lv.I〜Lv.IX の判定
-- Q10：業界貢献度のボーナスバッジ
-- スコア 2 以上（C または D 回答）= その Lv. 到達と判定
-- 最終ランク = 到達した最高 Lv.
+- 10 multiple-choice questions (4 options each)
+- Clicking an answer auto-advances after 350 ms — no manual "Next" needed
+- Q1–Q9 gate Lv.I–Lv.IX
+- Q10 is a bonus (industry contribution badge)
+- Rank = highest level where the answer scored ≥ 2 (option C or D)
+- Result = certificate with name, rank, English & Japanese labels, description, serial #, issue date
 
-診断結果は、名前入り・シリアル番号入りの **認定証** として発行されます。
-
----
-
-## 🔐 プライバシー
-
-- 診断結果はブラウザの localStorage に保存（サーバーには送信されません）
-- SNS シェア／PNG 保存時のみ、**氏名・メール・会社名** の登録をお願いしています
-- 登録情報は証明書発行・シェア機能、法人向け診断ツール（有料・準備中）の先行案内のみに使用
-- 詳細は [DATA_STORAGE.md](./DATA_STORAGE.md) 参照
+The certificate renders inline as an interactive card **and** as a shareable OG image with a unique URL per rank (`/c?rank=N&name=X`). Posting that URL to X/Twitter shows the rank-specific certificate preview.
 
 ---
 
-## 🏢 法人向け診断ツール（有料・準備中）
+## 🔐 Privacy
 
-組織全体の AI 成熟度を診断したい企業向けに、以下を提供予定です：
-
-- 全社員の AI レベル一斉診断
-- 部署別ベンチマーク
-- カスタム質問設計
-- 成長トラッキング（四半期・年次）
-- 個別研修プログラム
-- 役員向けエグゼクティブサマリー
-
-先行お問い合わせ：[X の @masahirochaen](https://x.com/masahirochaen) へ DM でご連絡ください。
+- Diagnostic answers live only in the user's browser (`localStorage`)
+- Sign-up is required **only for sharing / PNG export** — collects name, email, company
+- No tracking cookies, no third-party analytics (by default)
+- See [DATA_STORAGE.md](./DATA_STORAGE.md) for persistence options and plumbing
 
 ---
 
-## 🪪 ライセンス
+## 🏢 Enterprise edition (coming soon — paid)
 
-MIT License — コピー・改変・商用利用すべて自由。
-ただし、**「THE AI RANK」** の名前は登録商標として保護予定です（混同回避のため）。
-派生格付けを作る場合は、別名をお使いください。
+For organizations that want to measure their team's AI maturity:
+
+- Company-wide diagnostics across all employees
+- Department benchmarks & trend tracking
+- Custom question sets matching your stack
+- Quarterly / annual re-testing for growth measurement
+- Role-specific training programs
+- Executive summary reports
+
+Reach out via **[DM on X → @masahirochaen](https://x.com/masahirochaen)** to join the wait-list.
 
 ---
 
-## 📣 関連リンク
+## 🪪 License
 
-- 🌐 **ウェブサイト**：https://ai-rank.org
-- 🐦 **X (Twitter)**：[@masahirochaen](https://x.com/masahirochaen)
-- 👤 **発案**：CHAEN（個人プロジェクト）
+**MIT** — copy, modify, commercial use are all free.
+"THE AI RANK" is being trademark-registered to avoid brand confusion; please use a different name if you derive a separate ranking system.
 
 ---
 
-## 🙏 謝辞
+## 📣 Links
 
-AI 時代の 2026 年に合わせて、個人の視点から再設計しました。
-既存の AI 関連スキル評価指標やクリエイター格付けなどの概念にインスパイアされています。
+- 🌐 **Website:** https://ai-rank.org
+- 🐦 **X (Twitter):** [@masahirochaen](https://x.com/masahirochaen)
+- 👤 **Creator:** CHAEN — individual project
+
+---
+
+## 🙏 Acknowledgements
+
+Built from scratch in 2026, informed by decades of prior thinking about skill evaluation, creator classifications, and AI literacy frameworks. Every level was field-tested against the 2026 tool landscape.
 
 ---
 
 *Let's build the universal AI literacy standard together.*
-*世界共通の AI 熟達度を、一緒に作りましょう。*
 
 — **[CHAEN](https://x.com/masahirochaen)** · MMXXVI
