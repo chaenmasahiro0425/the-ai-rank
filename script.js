@@ -477,7 +477,239 @@ function el(tag, attrs = {}, ...children) {
     const url = location.href;
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank", "noopener");
   }
-  function doDownload() { toast("証明書を保存しました（デモ実装）"); }
+  /* Certificate → JPEG (native Canvas, no external dependency) */
+  async function doDownload() {
+    try {
+      toast("証明書を生成中…");
+
+      // Pull live values from DOM
+      const nm      = ($("#certName")?.textContent       || "—— ANONYMOUS ——").trim();
+      const num     = ($("#certNumeral")?.textContent    || "—").trim();
+      const en      = ($("#certTitleEn")?.textContent    || "UNRANKED").trim();
+      const ja      = ($("#certTitleJa")?.textContent    || "未 診 断").trim();
+      const def     = ($("#certDefinition")?.textContent || "").trim();
+      const serial  = ($("#certSerial")?.textContent     || "0000-0000-0000").trim();
+      const dateTxt = ($("#certDate")?.textContent       || "—— / —— / ——").trim();
+
+      // Preload fonts used by the canvas render (page already fetched them)
+      const fontSets = [
+        'bold 72px "Bricolage Grotesque"',
+        '600 40px "Shippori Mincho B1"',
+        '400 26px "Shippori Mincho B1"',
+        '500 22px "Instrument Sans"',
+        '400 18px "JetBrains Mono"',
+        '400 14px "JetBrains Mono"',
+      ];
+      try {
+        if (document.fonts?.load) {
+          await Promise.all(fontSets.map((f) => document.fonts.load(f)));
+        }
+      } catch (e) { /* best-effort */ }
+
+      // Canvas (portrait, retina-ish)
+      const W = 1400, H = 1960;
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const ctx = c.getContext("2d");
+
+      // Paper background
+      ctx.fillStyle = "#F1ECE0";
+      ctx.fillRect(0, 0, W, H);
+
+      // Subtle inner-shadow vignette
+      const vig = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.4, W / 2, H / 2, Math.max(W, H) * 0.75);
+      vig.addColorStop(0, "rgba(0,0,0,0)");
+      vig.addColorStop(1, "rgba(23,19,15,0.08)");
+      ctx.fillStyle = vig;
+      ctx.fillRect(0, 0, W, H);
+
+      // Inner double frame
+      const INK = "#17130F", ACCENT = "#8B2514", BRASS = "#B18B4E", INK_SOFT = "#2A241E", INK_MUTED = "#5C5247", INK_GHOST = "#958A7C";
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = 1;
+      ctx.strokeRect(60, 60, W - 120, H - 120);
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = "rgba(23,19,15,0.35)";
+      ctx.strokeRect(75, 75, W - 150, H - 150);
+
+      // Ornamental corners (L-shaped brackets)
+      const cornerLen = 42, cornerOff = 88;
+      ctx.strokeStyle = ACCENT;
+      ctx.lineWidth = 2;
+      const drawCorner = (x, y, dx, dy) => {
+        ctx.beginPath();
+        ctx.moveTo(x + dx * cornerLen, y);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x, y + dy * cornerLen);
+        ctx.stroke();
+      };
+      drawCorner(cornerOff, cornerOff, 1, 1);
+      drawCorner(W - cornerOff, cornerOff, -1, 1);
+      drawCorner(cornerOff, H - cornerOff, 1, -1);
+      drawCorner(W - cornerOff, H - cornerOff, -1, -1);
+
+      // Helper: centered text
+      const drawCenter = (text, y, font, color, letterSpacing = 0) => {
+        ctx.font = font;
+        ctx.fillStyle = color;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "alphabetic";
+        if (!letterSpacing) {
+          ctx.fillText(text, W / 2, y);
+          return;
+        }
+        // Manual letter-spacing for uppercase / mono styles
+        const chars = Array.from(text);
+        const widths = chars.map((ch) => ctx.measureText(ch).width);
+        const total = widths.reduce((a, b) => a + b, 0) + letterSpacing * (chars.length - 1);
+        let x = W / 2 - total / 2;
+        chars.forEach((ch, i) => {
+          ctx.fillText(ch, x + widths[i] / 2, y);
+          x += widths[i] + letterSpacing;
+        });
+      };
+
+      // Header
+      drawCenter("── CERTIFICATE OF THE AI RANK ──", 200,
+        '400 22px "JetBrains Mono", monospace', INK, 3);
+      drawCenter("認 定 証 / OFFICIAL RECORD", 240,
+        '400 18px "JetBrains Mono", monospace', INK_GHOST, 2);
+
+      // Decorative separator
+      ctx.strokeStyle = BRASS;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(W / 2 - 180, 280); ctx.lineTo(W / 2 - 30, 280); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(W / 2 + 30, 280); ctx.lineTo(W / 2 + 180, 280); ctx.stroke();
+      ctx.fillStyle = BRASS;
+      ctx.beginPath(); ctx.arc(W / 2, 280, 4, 0, Math.PI * 2); ctx.fill();
+
+      // "THIS CERTIFIES THAT"
+      drawCenter("THIS CERTIFIES THAT", 380,
+        '400 20px "JetBrains Mono", monospace', INK_MUTED, 5);
+
+      // NAME (huge, serif)
+      drawCenter(nm, 480,
+        '600 56px "Shippori Mincho B1", serif', INK, 0);
+
+      // underline under name
+      const nameW = Math.min(W - 240, ctx.measureText(nm).width + 160);
+      ctx.strokeStyle = "rgba(23,19,15,0.35)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo((W - nameW) / 2, 510); ctx.lineTo((W + nameW) / 2, 510); ctx.stroke();
+
+      // "HAS ATTAINED THE RANK OF"
+      drawCenter("HAS ATTAINED THE RANK OF", 580,
+        '400 20px "JetBrains Mono", monospace', INK_MUTED, 5);
+
+      // Roman numeral (gigantic)
+      ctx.font = '700 180px "Bricolage Grotesque", sans-serif';
+      ctx.fillStyle = ACCENT;
+      ctx.textAlign = "center";
+      ctx.fillText(num, W / 2, 780);
+
+      // EN rank name
+      drawCenter(en, 870,
+        '700 56px "Bricolage Grotesque", sans-serif', INK, 2);
+
+      // JA rank name
+      drawCenter(ja, 940,
+        '600 32px "Shippori Mincho B1", serif', INK_SOFT, 12);
+
+      // Definition (wrapped)
+      {
+        ctx.font = '400 22px "Shippori Mincho B1", serif';
+        ctx.fillStyle = INK_SOFT;
+        ctx.textAlign = "center";
+        const maxW = W - 280;
+        // naive wrap — insert break every ~28 full-width chars
+        const words = def.split("");
+        const lines = [];
+        let line = "";
+        words.forEach((ch) => {
+          if (ctx.measureText(line + ch).width > maxW) { lines.push(line); line = ch; }
+          else { line += ch; }
+        });
+        if (line) lines.push(line);
+        let y = 1020;
+        lines.forEach((ln) => { ctx.fillText(ln, W / 2, y); y += 36; });
+      }
+
+      // Seal (circles + text)
+      const sealX = W / 2, sealY = 1280, sealR = 90;
+      ctx.strokeStyle = INK;
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(sealX, sealY, sealR, 0, Math.PI * 2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(sealX, sealY, sealR - 10, 0, Math.PI * 2); ctx.stroke();
+      drawCenter("THE · AI · RANK", sealY - 12,
+        '400 11px "JetBrains Mono", monospace', INK, 2);
+      ctx.font = '700 40px "Bricolage Grotesque", sans-serif';
+      ctx.fillStyle = ACCENT;
+      ctx.textAlign = "center";
+      ctx.fillText("AIR", sealX, sealY + 18);
+      drawCenter("· MMXXVI ·", sealY + 40,
+        '400 10px "JetBrains Mono", monospace', INK_MUTED, 2);
+
+      // Footer: left (issuer), right (serial / date)
+      const footY = 1550;
+
+      // Separator line above footer
+      ctx.strokeStyle = "rgba(23,19,15,0.2)";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(180, footY - 80); ctx.lineTo(W - 180, footY - 80); ctx.stroke();
+
+      // Issuer (left)
+      ctx.textAlign = "left";
+      ctx.font = '400 14px "JetBrains Mono", monospace';
+      ctx.fillStyle = INK_GHOST;
+      ctx.fillText("ISSUED BY", 200, footY - 40);
+      ctx.font = '700 44px "Bricolage Grotesque", sans-serif';
+      ctx.fillStyle = INK;
+      ctx.fillText("CHAEN", 200, footY + 10);
+      ctx.font = '400 13px "JetBrains Mono", monospace';
+      ctx.fillStyle = INK_MUTED;
+      ctx.fillText("AI 格付けランク · MMXXVI", 200, footY + 40);
+
+      // Serial / date (right)
+      ctx.textAlign = "right";
+      ctx.font = '400 14px "JetBrains Mono", monospace';
+      ctx.fillStyle = INK_GHOST;
+      ctx.fillText("SERIAL №", W - 200, footY - 40);
+      ctx.font = '500 28px "JetBrains Mono", monospace';
+      ctx.fillStyle = INK;
+      ctx.fillText(serial, W - 200, footY);
+      ctx.font = '400 14px "JetBrains Mono", monospace';
+      ctx.fillStyle = INK_MUTED;
+      ctx.fillText(dateTxt, W - 200, footY + 30);
+
+      // Colophon mark bottom
+      drawCenter("THE AI RANK · © 2026 CHAEN · NO. 0001", 1840,
+        '400 13px "JetBrains Mono", monospace', INK_GHOST, 4);
+
+      // Export → JPEG blob → download
+      const blob = await new Promise((resolve, reject) => {
+        c.toBlob((b) => b ? resolve(b) : reject(new Error("toBlob failed")), "image/jpeg", 0.92);
+      });
+
+      // Sanitize filename
+      const safeName = nm.replace(/[^A-Za-z0-9\u3040-\u30FF\u4E00-\u9FFF\- ]/g, "").trim().replace(/\s+/g, "-") || "ANONYMOUS";
+      const safeEn   = en.replace(/[^A-Za-z0-9\- ]/g, "").trim().replace(/\s+/g, "-") || "RANK";
+      const today    = new Date();
+      const iso      = `${today.getFullYear()}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}`;
+      const fileName = `THE-AI-RANK_Lv${num}_${safeEn}_${safeName}_${iso}.jpg`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = fileName;
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 800);
+
+      toast("証明書を保存しました 🎖️");
+    } catch (err) {
+      console.error("[AIRANK:cert_download_failed]", err);
+      toast("保存に失敗しました。もう一度お試しください。");
+    }
+  }
 
   $("#shareX")?.addEventListener("click", () => { if (!isAuthed()) return openModal("share-x"); doShareX(); });
   $("#shareLinkedIn")?.addEventListener("click", () => { if (!isAuthed()) return openModal("share-li"); doShareLinkedIn(); });
